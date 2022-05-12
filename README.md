@@ -1,7 +1,7 @@
 
 # AuthenticationServer
 
-Authentication server for 3C
+Authentication server for 3C  
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
 
