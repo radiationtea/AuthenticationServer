@@ -24,7 +24,7 @@ namespace Auth.Controllers
                 return new JsonResult(m);
             }
 
-            if (user.Password != Utils.SHA256(request.Password))
+            if (user.Password != Utils.SHA512(user.Salt+request.Password))
             {
                 m.Success = false;
                 m.Message = "Incorrect Password.";

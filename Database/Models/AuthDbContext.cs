@@ -32,7 +32,8 @@ namespace Auth.Database.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql(System.IO.File.ReadAllText("db.txt"), ServerVersion.Parse("5.5.68-mariadb"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseMySql(System.IO.File.ReadAllText("db.txt"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.5.68-mariadb"));
             }
         }
 
@@ -46,6 +47,9 @@ namespace Auth.Database.Models
                 entity.HasNoKey();
 
                 entity.ToTable("categories");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Categoryid)
                     .HasColumnType("int(11)")
@@ -84,6 +88,9 @@ namespace Auth.Database.Models
 
                 entity.ToTable("departs");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Depid)
                     .HasColumnType("int(11)")
                     .HasColumnName("depid");
@@ -99,6 +106,9 @@ namespace Auth.Database.Models
 
                 entity.ToTable("files");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Fileid).HasColumnName("fileid");
 
                 entity.Property(e => e.Postid)
@@ -106,7 +116,7 @@ namespace Auth.Database.Models
                     .HasColumnName("postid");
 
                 entity.Property(e => e.Url)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("url");
 
                 entity.Property(e => e.Userid)
@@ -119,6 +129,9 @@ namespace Auth.Database.Models
                 entity.HasNoKey();
 
                 entity.ToTable("history");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Categoryid)
                     .HasColumnType("int(11)")
@@ -151,6 +164,9 @@ namespace Auth.Database.Models
 
                 entity.ToTable("legends");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Cardinal)
                     .HasColumnType("int(11)")
                     .HasColumnName("cardinal");
@@ -175,16 +191,19 @@ namespace Auth.Database.Models
 
                 entity.ToTable("messages");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Notiid)
                     .HasColumnType("int(11)")
                     .HasColumnName("notiid");
 
                 entity.Property(e => e.Content)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("content");
 
                 entity.Property(e => e.Errors)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("errors");
 
                 entity.Property(e => e.Phone)
@@ -212,6 +231,9 @@ namespace Auth.Database.Models
 
                 entity.ToTable("permissions");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Permid)
                     .HasColumnType("int(11) unsigned")
                     .HasColumnName("permid");
@@ -227,12 +249,15 @@ namespace Auth.Database.Models
 
                 entity.ToTable("posts");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Categoryid)
                     .HasColumnType("int(11)")
                     .HasColumnName("categoryid");
 
                 entity.Property(e => e.Content)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("content");
 
                 entity.Property(e => e.Createdat)
@@ -251,6 +276,9 @@ namespace Auth.Database.Models
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("roles");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
 
                 entity.Property(e => e.Roleid)
                     .HasColumnType("int(11)")
@@ -271,6 +299,9 @@ namespace Auth.Database.Models
 
                 entity.ToTable("subcate");
 
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
                 entity.Property(e => e.Categoryid)
                     .HasColumnType("int(11)")
                     .HasColumnName("categoryid");
@@ -290,9 +321,14 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("users");
+
+                entity.HasCharSet("utf8")
+                    .UseCollation("utf8_general_ci");
+
+                entity.Property(e => e.Userid)
+                    .HasMaxLength(18)
+                    .HasColumnName("userid");
 
                 entity.Property(e => e.Cardinal)
                     .HasColumnType("int(11)")
@@ -323,10 +359,6 @@ namespace Auth.Database.Models
                     .HasMaxLength(5)
                     .HasColumnName("salt")
                     .IsFixedLength();
-
-                entity.Property(e => e.Userid)
-                    .HasMaxLength(18)
-                    .HasColumnName("userid");
             });
 
             OnModelCreatingPartial(modelBuilder);

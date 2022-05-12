@@ -12,7 +12,7 @@ namespace Auth.Controllers
         public async Task<IActionResult> TestUser()
         {
             var username = new string(Guid.NewGuid().ToString("N").Take(12).ToArray());
-            var password = Utils.SHA256("test");
+            var password = Utils.SHA512("test");
             User u = new();
             u.Userid = username;
             u.Password = password;
