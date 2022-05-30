@@ -18,14 +18,20 @@ namespace Auth.Controllers
         {
             if (!HttpContext.Items.ContainsKey("user")) return Utils.NORIP();
             AuthDbContext db = new();
-            var userRoles = db.Roles.Where(x => x.Userid == userId);
-            var userPermissions = from role in userRoles.ToList()
-                let permission = (from p in db.Permissions.Where(x => x.Roleid == role.Roleid)
-                    select p.Label)
-                select permission;
-            return new JsonResult(new {userRoles, userPermissions});
+            var permissions = (from r in db.Roles.Where(x => x.Userid == userId).ToList()
+                let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
+                    select p1.Label
+                select p).SingleOrDefault();
+            return new JsonResult(permissions);
         }
-        
+
+        [RequireAuth]
+        [RequirePermission(Permission = "MANAGE_NOTIFICATIONS")]
+        [HttpGet]
+        public async Task<IActionResult> Test()
+        {
+            return Utils.NORIP();
+        }
 
         [RequireAuth]
         [HttpPost("new")]
