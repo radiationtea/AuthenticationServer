@@ -7,7 +7,7 @@ namespace Auth.Database.Models
     {
         public uint Categoryid { get; set; }
         public string Manager { get; set; } = null!;
-        public string Name { get; set; } = null!;
+        public string Label { get; set; } = null!;
         public string Description { get; set; } = null!;
         public uint MaxScore { get; set; }
         public string EvalDateStart { get; set; } = null!;

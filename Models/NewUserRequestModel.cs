@@ -5,13 +5,13 @@ namespace Auth.Models
     public class NewUserRequestModel
     {
         [JsonPropertyName("cardinal")]
-        public int Cardinal { get; set; }
+        public uint Cardinal { get; set; }
 
         [JsonPropertyName("users")]
         public IEnumerable<UserSubRequestModel> Users { get; set; }
 
         [JsonPropertyName("dep")]
-        public int DepId { get; set; }
+        public uint DepId { get; set; }
     }
 
     public class UserSubRequestModel

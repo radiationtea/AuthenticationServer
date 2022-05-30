@@ -16,8 +16,7 @@ namespace Auth.Attributes
             var permissions = (from r in db.Roles.Where(x => x.Userid == user.Userid).ToList()
                 let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
                     select p1.Label
-                              select p).SingleOrDefault();
-                                  
+                select p).SelectMany(x=> x).Distinct();
             if (!permissions.Contains(Permission))
             {
                 var m = new GeneralResponseModel();

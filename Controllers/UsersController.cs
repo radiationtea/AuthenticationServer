@@ -18,11 +18,11 @@ namespace Auth.Controllers
         {
             if (!HttpContext.Items.ContainsKey("user")) return Utils.NORIP();
             AuthDbContext db = new();
-            var permissions = (from r in db.Roles.Where(x => x.Userid == userId).ToList()
+            var permissions = from r in db.Roles.Where(x => x.Userid == userId).ToList()
                 let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
                     select p1.Label
-                select p).SingleOrDefault();
-            return new JsonResult(permissions);
+                select p;
+            return new JsonResult(permissions.SelectMany(x=> x).Distinct());
         }
 
         [RequireAuth]
@@ -54,8 +54,7 @@ namespace Auth.Controllers
                 var id = Utils.SHA512(salt+prefixes.ElementAt(i));
                 return new User()
                 {
-                    // Cardinal = m.Cardinal, Depid = m.DepId, Name = user.Name, Password = id, Phone = user.Phone,
-                    // Roles = 0, Salt = salt, Userid = id
+                    Cardinal = m.Cardinal, Depid = m.DepId, Name = user.Name, Password = id, Phone = user.Phone, Salt = salt, Userid = id
                 };
             });
             await db.Users.AddRangeAsync(usersToInsert);

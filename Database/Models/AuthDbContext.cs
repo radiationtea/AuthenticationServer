@@ -39,8 +39,8 @@ namespace Auth.Database.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseCollation("latin1_swedish_ci")
-                .HasCharSet("latin1");
+            modelBuilder.UseCollation("utf8mb4_unicode_ci")
+                .HasCharSet("utf8mb4");
 
             modelBuilder.Entity<Category>(entity =>
             {
@@ -64,6 +64,10 @@ namespace Auth.Database.Models
                     .HasColumnName("eval_date_stop")
                     .IsFixedLength();
 
+                entity.Property(e => e.Label)
+                    .HasMaxLength(30)
+                    .HasColumnName("label");
+
                 entity.Property(e => e.Manager)
                     .HasMaxLength(18)
                     .HasColumnName("manager");
@@ -71,10 +75,6 @@ namespace Auth.Database.Models
                 entity.Property(e => e.MaxScore)
                     .HasColumnType("int(10) unsigned")
                     .HasColumnName("max_score");
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(30)
-                    .HasColumnName("name");
             });
 
             modelBuilder.Entity<Depart>(entity =>
@@ -108,7 +108,7 @@ namespace Auth.Database.Models
                     .HasColumnName("postid");
 
                 entity.Property(e => e.Url)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("url");
             });
 
@@ -177,11 +177,11 @@ namespace Auth.Database.Models
                     .HasColumnName("msgid");
 
                 entity.Property(e => e.Content)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("content");
 
                 entity.Property(e => e.Errors)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("errors");
 
                 entity.Property(e => e.Phone)
@@ -204,22 +204,24 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<Permission>(entity =>
             {
-                entity.HasKey(e => e.Permid)
-                    .HasName("PRIMARY");
+                entity.HasKey(e => new { e.Permid, e.Roleid })
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
                 entity.ToTable("permissions");
 
                 entity.Property(e => e.Permid)
                     .HasColumnType("int(10) unsigned")
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("permid");
-
-                entity.Property(e => e.Label)
-                    .HasMaxLength(30)
-                    .HasColumnName("label");
 
                 entity.Property(e => e.Roleid)
                     .HasColumnType("int(10) unsigned")
                     .HasColumnName("roleid");
+
+                entity.Property(e => e.Label)
+                    .HasMaxLength(30)
+                    .HasColumnName("label");
             });
 
             modelBuilder.Entity<Post>(entity =>
@@ -235,7 +237,7 @@ namespace Auth.Database.Models
                     .HasColumnName("categoryid");
 
                 entity.Property(e => e.Content)
-                    .HasColumnType("text")
+                    .HasColumnType("mediumtext")
                     .HasColumnName("content");
 
                 entity.Property(e => e.Createdat)
@@ -250,19 +252,24 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<Role>(entity =>
             {
+                entity.HasKey(e => new { e.Roleid, e.Userid })
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
                 entity.ToTable("roles");
 
                 entity.Property(e => e.Roleid)
                     .HasColumnType("int(10) unsigned")
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("roleid");
-
-                entity.Property(e => e.Label)
-                    .HasMaxLength(30)
-                    .HasColumnName("label");
 
                 entity.Property(e => e.Userid)
                     .HasMaxLength(18)
                     .HasColumnName("userid");
+
+                entity.Property(e => e.Label)
+                    .HasMaxLength(30)
+                    .HasColumnName("label");
             });
 
             modelBuilder.Entity<Subcate>(entity =>
@@ -274,6 +281,10 @@ namespace Auth.Database.Models
                 entity.Property(e => e.Categoryid)
                     .HasColumnType("int(10) unsigned")
                     .HasColumnName("categoryid");
+
+                entity.Property(e => e.Label)
+                    .HasMaxLength(30)
+                    .HasColumnName("label");
 
                 entity.Property(e => e.Score)
                     .HasColumnType("int(10) unsigned")
