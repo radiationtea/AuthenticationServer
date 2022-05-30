@@ -18,7 +18,7 @@ namespace Auth.Database
             var destUser = await context.Users.SingleOrDefaultAsync(x=> x.Userid == userId);
             if (destUser == null) return null;
             
-            IJwtAlgorithm algorithm = new HMACSHA512Algorithm(); // symmetric
+            IJwtAlgorithm algorithm = new HMACSHA512Algorithm();
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);

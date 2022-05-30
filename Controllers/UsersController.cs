@@ -12,15 +12,18 @@ namespace Auth.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        [RequireAuth]
+        // [RequireAuth]
         [HttpGet("permissions")]
-        public async Task<IActionResult> PermissionAsync()
+        public async Task<IActionResult> PermissionAsync([FromQuery]string userId)
         {
             if (!HttpContext.Items.ContainsKey("user")) return Utils.NORIP();
             AuthDbContext db = new();
-            var fucking_user_role = db.Users.FirstOrDefault().Roles;
-            var r = db.Roles.ToList().Where(r => (fucking_user_role & (1 << r.Roleid)) > 0);
-            return new JsonResult(r.SingleOrDefault());
+            var userRoles = db.Roles.Where(x => x.Userid == userId);
+            var userPermissions = from role in userRoles.ToList()
+                let permission = (from p in db.Permissions.Where(x => x.Roleid == role.Roleid)
+                    select p.Label)
+                select permission;
+            return new JsonResult(new {userRoles, userPermissions});
         }
         
 
@@ -45,8 +48,8 @@ namespace Auth.Controllers
                 var id = Utils.SHA512(salt+prefixes.ElementAt(i));
                 return new User()
                 {
-                    Cardinal = m.Cardinal, Depid = m.DepId, Name = user.Name, Password = id, Phone = user.Phone,
-                    Roles = 0, Salt = salt, Userid = id
+                    // Cardinal = m.Cardinal, Depid = m.DepId, Name = user.Name, Password = id, Phone = user.Phone,
+                    // Roles = 0, Salt = salt, Userid = id
                 };
             });
             await db.Users.AddRangeAsync(usersToInsert);

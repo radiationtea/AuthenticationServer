@@ -33,7 +33,7 @@ namespace Auth.Database.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql(System.IO.File.ReadAllText("db.txt"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("5.5.68-mariadb"));
+                optionsBuilder.UseMySql(System.IO.File.ReadAllText("db.txt"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.5.10-mariadb"));
             }
         }
 
@@ -44,15 +44,10 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("categories");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Categoryid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("categoryid");
 
                 entity.Property(e => e.Description)
@@ -69,30 +64,28 @@ namespace Auth.Database.Models
                     .HasColumnName("eval_date_stop")
                     .IsFixedLength();
 
-                entity.Property(e => e.Label)
-                    .HasMaxLength(30)
-                    .HasColumnName("label");
-
                 entity.Property(e => e.Manager)
                     .HasMaxLength(18)
                     .HasColumnName("manager");
 
                 entity.Property(e => e.MaxScore)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("max_score");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(30)
+                    .HasColumnName("name");
             });
 
             modelBuilder.Entity<Depart>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.Depid)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("departs");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Depid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("depid");
 
                 entity.Property(e => e.Desc)
@@ -106,22 +99,17 @@ namespace Auth.Database.Models
 
                 entity.ToTable("files");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.Property(e => e.Fileid).HasColumnName("fileid");
+                entity.Property(e => e.Fileid)
+                    .HasColumnName("fileid")
+                    .HasDefaultValueSql("uuid()");
 
                 entity.Property(e => e.Postid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("postid");
 
                 entity.Property(e => e.Url)
-                    .HasColumnType("mediumtext")
+                    .HasColumnType("text")
                     .HasColumnName("url");
-
-                entity.Property(e => e.Userid)
-                    .HasMaxLength(18)
-                    .HasColumnName("userid");
             });
 
             modelBuilder.Entity<History>(entity =>
@@ -130,16 +118,14 @@ namespace Auth.Database.Models
 
                 entity.ToTable("history");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Categoryid)
                     .HasColumnType("int(11)")
                     .HasColumnName("categoryid");
 
                 entity.Property(e => e.Createdat)
                     .HasColumnType("timestamp")
-                    .HasColumnName("createdat");
+                    .HasColumnName("createdat")
+                    .HasDefaultValueSql("current_timestamp()");
 
                 entity.Property(e => e.Hisid)
                     .HasColumnType("int(11)")
@@ -160,50 +146,42 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<Legend>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("legends");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
+                entity.Property(e => e.Legendid)
+                    .HasColumnType("int(10) unsigned")
+                    .HasColumnName("legendid");
 
                 entity.Property(e => e.Cardinal)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("cardinal");
-
-                entity.Property(e => e.Legendid)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("legendid");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(4)
                     .HasColumnName("name");
 
                 entity.Property(e => e.Score)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("score");
             });
 
             modelBuilder.Entity<Message>(entity =>
             {
-                entity.HasKey(e => e.Notiid)
+                entity.HasKey(e => e.Msgid)
                     .HasName("PRIMARY");
 
                 entity.ToTable("messages");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.Property(e => e.Notiid)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("notiid");
+                entity.Property(e => e.Msgid)
+                    .HasColumnType("int(10) unsigned")
+                    .HasColumnName("msgid");
 
                 entity.Property(e => e.Content)
-                    .HasColumnType("mediumtext")
+                    .HasColumnType("text")
                     .HasColumnName("content");
 
                 entity.Property(e => e.Errors)
-                    .HasColumnType("mediumtext")
+                    .HasColumnType("text")
                     .HasColumnName("errors");
 
                 entity.Property(e => e.Phone)
@@ -213,7 +191,7 @@ namespace Auth.Database.Models
                 entity.Property(e => e.Requestedat)
                     .HasColumnType("timestamp")
                     .HasColumnName("requestedat")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                    .HasDefaultValueSql("current_timestamp()");
 
                 entity.Property(e => e.Resolvedat)
                     .HasColumnType("timestamp")
@@ -231,42 +209,39 @@ namespace Auth.Database.Models
 
                 entity.ToTable("permissions");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Permid)
-                    .HasColumnType("int(11) unsigned")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("permid");
 
                 entity.Property(e => e.Label)
                     .HasMaxLength(30)
                     .HasColumnName("label");
+
+                entity.Property(e => e.Roleid)
+                    .HasColumnType("int(10) unsigned")
+                    .HasColumnName("roleid");
             });
 
             modelBuilder.Entity<Post>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("posts");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
+                entity.Property(e => e.Postid)
+                    .HasColumnType("int(10) unsigned")
+                    .HasColumnName("postid");
 
                 entity.Property(e => e.Categoryid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("categoryid");
 
                 entity.Property(e => e.Content)
-                    .HasColumnType("mediumtext")
+                    .HasColumnType("text")
                     .HasColumnName("content");
 
                 entity.Property(e => e.Createdat)
                     .HasColumnType("timestamp")
-                    .HasColumnName("createdat");
-
-                entity.Property(e => e.Postid)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("postid");
+                    .HasColumnName("createdat")
+                    .HasDefaultValueSql("current_timestamp()");
 
                 entity.Property(e => e.Userid)
                     .HasMaxLength(18)
@@ -277,20 +252,17 @@ namespace Auth.Database.Models
             {
                 entity.ToTable("roles");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Roleid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("roleid");
 
                 entity.Property(e => e.Label)
                     .HasMaxLength(30)
                     .HasColumnName("label");
 
-                entity.Property(e => e.Perms)
-                    .HasColumnType("int(11) unsigned")
-                    .HasColumnName("perms");
+                entity.Property(e => e.Userid)
+                    .HasMaxLength(18)
+                    .HasColumnName("userid");
             });
 
             modelBuilder.Entity<Subcate>(entity =>
@@ -299,43 +271,33 @@ namespace Auth.Database.Models
 
                 entity.ToTable("subcate");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
                 entity.Property(e => e.Categoryid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("categoryid");
 
-                entity.Property(e => e.Label)
-                    .HasMaxLength(150)
-                    .HasColumnName("label");
-
                 entity.Property(e => e.Score)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("score");
 
                 entity.Property(e => e.Subid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("subid");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.HasNoKey();
+
                 entity.ToTable("users");
 
-                entity.HasCharSet("utf8")
-                    .UseCollation("utf8_general_ci");
-
-                entity.Property(e => e.Userid)
-                    .HasMaxLength(18)
-                    .HasColumnName("userid");
+                entity.HasIndex(e => e.Depid, "FK_departs_TO_users_1");
 
                 entity.Property(e => e.Cardinal)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("cardinal");
 
                 entity.Property(e => e.Depid)
-                    .HasColumnType("int(11)")
+                    .HasColumnType("int(10) unsigned")
                     .HasColumnName("depid");
 
                 entity.Property(e => e.Name)
@@ -351,14 +313,20 @@ namespace Auth.Database.Models
                     .HasMaxLength(13)
                     .HasColumnName("phone");
 
-                entity.Property(e => e.Roles)
-                    .HasColumnType("int(11) unsigned")
-                    .HasColumnName("roles");
-
                 entity.Property(e => e.Salt)
                     .HasMaxLength(5)
                     .HasColumnName("salt")
                     .IsFixedLength();
+
+                entity.Property(e => e.Userid)
+                    .HasMaxLength(18)
+                    .HasColumnName("userid");
+
+                entity.HasOne(d => d.Dep)
+                    .WithMany()
+                    .HasForeignKey(d => d.Depid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_departs_TO_users_1");
             });
 
             OnModelCreatingPartial(modelBuilder);

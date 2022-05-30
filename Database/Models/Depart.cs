@@ -5,7 +5,7 @@ namespace Auth.Database.Models
 {
     public partial class Depart
     {
-        public int Depid { get; set; }
-        public string? Desc { get; set; }
+        public uint Depid { get; set; }
+        public string Desc { get; set; } = null!;
     }
 }

@@ -5,9 +5,9 @@ namespace Auth.Database.Models
 {
     public partial class Legend
     {
-        public int Legendid { get; set; }
-        public int? Score { get; set; }
-        public int? Cardinal { get; set; }
-        public string? Name { get; set; }
+        public uint Legendid { get; set; }
+        public uint Score { get; set; }
+        public uint Cardinal { get; set; }
+        public string Name { get; set; } = null!;
     }
 }

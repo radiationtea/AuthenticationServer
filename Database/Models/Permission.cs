@@ -6,6 +6,7 @@ namespace Auth.Database.Models
     public partial class Permission
     {
         public uint Permid { get; set; }
-        public string? Label { get; set; }
+        public uint Roleid { get; set; }
+        public string Label { get; set; } = null!;
     }
 }
