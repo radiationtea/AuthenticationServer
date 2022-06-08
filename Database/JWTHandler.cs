@@ -27,7 +27,7 @@ namespace Auth.Database
             return token;
         }
 
-        public static User DecodeJWT(string jwt)
+        public static User? DecodeJWT(string jwt)
         {
             try
             {
@@ -41,16 +41,11 @@ namespace Auth.Database
                 var json = decoder.Decode(jwt, Secret, verify: true);
                 return JsonConvert.DeserializeObject<User>(json);
             }
-            catch (TokenExpiredException)
+            catch (Exception)
             {
-                Console.WriteLine("Token has expired");
+                return null;
             }
-            catch (SignatureVerificationException)
-            {
-                Console.WriteLine("Token has invalid signature");
-            }
-
-            return null;
+            
         }
     }
 }

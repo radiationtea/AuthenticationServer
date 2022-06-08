@@ -8,7 +8,8 @@ using Newtonsoft.Json;
 
 namespace Auth.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1")]
+    [Route("api/auth/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -34,6 +35,7 @@ namespace Auth.Controllers
         }
 
         [RequireAuth]
+        [RequirePermission(Permission = "MANAGE_USERS")]
         [HttpPost("new")]
         public async Task<IActionResult> NewUsersAsync([FromBody]NewUserRequestModel m)
         {
@@ -50,11 +52,10 @@ namespace Auth.Controllers
 
             var usersToInsert = m.Users.Select((user, i) =>
             {
-                var salt = Utils.GenerateRandomSalt(5);
-                var id = Utils.SHA512(salt+prefixes.ElementAt(i));
+                var id = Utils.SHA512(prefixes.ElementAt(i));
                 return new User()
                 {
-                    Cardinal = m.Cardinal, Depid = m.DepId, Name = user.Name, Password = id, Phone = user.Phone, Salt = salt, Userid = id
+                    Cardinal = m.Cardinal, Depid = m.DepId, Name = user.Name, Password = id, Phone = user.Phone, Salt = string.Empty, Userid = id
                 };
             });
             await db.Users.AddRangeAsync(usersToInsert);

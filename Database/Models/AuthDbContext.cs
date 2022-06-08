@@ -32,7 +32,6 @@ namespace Auth.Database.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseMySql(System.IO.File.ReadAllText("db.txt"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("10.5.10-mariadb"));
             }
         }
@@ -228,13 +227,13 @@ namespace Auth.Database.Models
             {
                 entity.ToTable("posts");
 
+                entity.HasIndex(e => e.Subid, "FK_posts_subcate");
+
                 entity.Property(e => e.Postid)
                     .HasColumnType("int(10) unsigned")
                     .HasColumnName("postid");
 
-                entity.Property(e => e.Categoryid)
-                    .HasColumnType("int(10) unsigned")
-                    .HasColumnName("categoryid");
+                entity.Property(e => e.Closed).HasColumnName("closed");
 
                 entity.Property(e => e.Content)
                     .HasColumnType("mediumtext")
@@ -245,9 +244,19 @@ namespace Auth.Database.Models
                     .HasColumnName("createdat")
                     .HasDefaultValueSql("current_timestamp()");
 
+                entity.Property(e => e.Subid)
+                    .HasColumnType("int(10) unsigned")
+                    .HasColumnName("subid");
+
                 entity.Property(e => e.Userid)
                     .HasMaxLength(18)
                     .HasColumnName("userid");
+
+                entity.HasOne(d => d.Sub)
+                    .WithMany(p => p.Posts)
+                    .HasForeignKey(d => d.Subid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_posts_subcate");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -274,9 +283,15 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<Subcate>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.Subid)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("subcate");
+
+                entity.Property(e => e.Subid)
+                    .HasColumnType("int(10) unsigned")
+                    .ValueGeneratedNever()
+                    .HasColumnName("subid");
 
                 entity.Property(e => e.Categoryid)
                     .HasColumnType("int(10) unsigned")
@@ -289,10 +304,6 @@ namespace Auth.Database.Models
                 entity.Property(e => e.Score)
                     .HasColumnType("int(10) unsigned")
                     .HasColumnName("score");
-
-                entity.Property(e => e.Subid)
-                    .HasColumnType("int(10) unsigned")
-                    .HasColumnName("subid");
             });
 
             modelBuilder.Entity<User>(entity =>

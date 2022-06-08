@@ -5,19 +5,22 @@ public class JWTMiddleware
 {
     public static async Task InvokeAsync(HttpContext ctx, Func<Task> next)
     {
-        // if (!ctx.Request.Cookies.ContainsKey("SESSION_TOKEN"))
-        // {
-        //     GeneralResponseModel m = new();
-        //     m.Success = false;
-        //     m.Message = "No SESSION_TOKEN Provided.";
-        //     await ctx.Response.WriteAsJsonAsync(m);
-        //     return;
-        // }
         if (ctx.Request.Cookies.ContainsKey("SESSION_TOKEN"))
         {
             var u = JWTHandler.DecodeJWT(ctx.Request.Cookies["SESSION_TOKEN"]);
-            ctx.Items.Add("user", u);
+
+            if (u == null)
+            {
+                Console.WriteLine("Unauthorized Removing User");
+                ctx.Items.Remove("user");
+            }
+            else
+            {
+                Console.WriteLine("User ok");
+                ctx.Items.Add("user", u);
+            }
         }
+        else ctx.Items.Remove("user");
         await next();
     }
 }

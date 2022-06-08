@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Auth.Attributes
 {
-    public class RequireAuthAttribute : ActionFilterAttribute
+    public class RequireAuthAttribute : Attribute, IAsyncActionFilter
     {
-        public override void OnActionExecuting(ActionExecutingContext context)
+
+        public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!context.HttpContext.Items.ContainsKey("user"))
+            Console.WriteLine("please1");
+            Console.WriteLine(context.HttpContext.Items["user"] is null);
+            if (!context.HttpContext.Items.ContainsKey("user") || context.HttpContext.Items["user"] is null)
             {
                 var m = new GeneralResponseModel();
                 m.Success = false;
@@ -16,7 +19,23 @@ namespace Auth.Attributes
                 context.Result = new JsonResult(m);
                 return;
             }
-            base.OnActionExecuting(context);
         }
+
+        public Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+        {
+            if (!context.HttpContext.Items.ContainsKey("user") || context.HttpContext.Items["user"] is null)
+            {
+                var m = new GeneralResponseModel();
+                m.Success = false;
+                m.Message = "Need authenticated.";
+                context.Result = new JsonResult(m);
+                context.HttpContext.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            }
+
+            return next();
+        }
+
+
     }
 }

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Auth.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,16 @@ var conf = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory(
 builder.WebHost.UseUrls(conf.GetValue<string>("Host"));
 builder.Services.AddControllers().AddJsonOptions(x=> x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 builder.Services.AddSwaggerGen();
+builder.Services.AddApiVersioning(x => x.AssumeDefaultVersionWhenUnspecified = true);
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
+
+
+
+builder.Services.AddScoped<RequireAuthAttribute>();
+builder.Services.AddScoped<RequirePermissionAttribute>();
 var app = builder.Build();
 app.Use(JWTMiddleware.InvokeAsync);
 app.UseSwagger();

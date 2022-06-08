@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1")]
+    [Route("api/auth/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -34,6 +35,12 @@ namespace Auth.Controllers
             string token = await JWTHandler.GenerateJWTAsync(user.Userid);
             m.Success = true;
             m.Data = new { Token = token };
+            if (user.Salt == string.Empty)
+            {
+                m.Success = true;
+                m.Message = "CHANGE_PASSWORD";
+                return new JsonResult(m);
+            }
             return new JsonResult(m);
         }
     }

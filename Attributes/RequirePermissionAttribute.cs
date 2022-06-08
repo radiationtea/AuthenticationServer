@@ -9,6 +9,7 @@ namespace Auth.Attributes
     public class RequirePermissionAttribute : ActionFilterAttribute
     {
         public string Permission;
+        public int Order = 2;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var db = new AuthDbContext();
