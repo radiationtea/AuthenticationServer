@@ -10,7 +10,7 @@ namespace Auth.Database
 {
     public class JWTHandler
     {
-        public static string Secret { get; } = "youshallnotpass"; //todo from appsettings
+        public static string Secret { get; set; }
 
         public static async Task<string> GenerateJWTAsync(string userId)
         {
