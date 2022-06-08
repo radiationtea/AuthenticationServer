@@ -10,7 +10,7 @@ phases:
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
       - ORMCONFIG_PARMS=$(aws ssm get-parameter --name "/3ccert/auth/dbconfig" --output json --with-decryption)
-      - echo $ORMCONFIG_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" | jq '.|fromjson' > db.txt
+      - echo $ORMCONFIG_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" > db.txt
       - echo Loaded db.txt
       - cat db.txt
   build:
