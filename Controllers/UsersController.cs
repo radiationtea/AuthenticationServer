@@ -1,4 +1,5 @@
 ﻿using Auth.Attributes;
+using Auth.Constants;
 using Auth.Database.Models;
 using Auth.Models;
 using Microsoft.AspNetCore.Http;
@@ -13,29 +14,8 @@ namespace Auth.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        // [RequireAuth]
-        [HttpGet("permissions")]
-        public async Task<IActionResult> PermissionAsync([FromQuery]string userId)
-        {
-            if (!HttpContext.Items.ContainsKey("user")) return Utils.NORIP();
-            AuthDbContext db = new();
-            var permissions = from r in db.Roles.Where(x => x.Userid == userId).ToList()
-                let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
-                    select p1.Label
-                select p;
-            return new JsonResult(permissions.SelectMany(x=> x).Distinct());
-        }
-
         [RequireAuth]
-        [RequirePermission(Permission = "MANAGE_NOTIFICATIONS")]
-        [HttpGet]
-        public async Task<IActionResult> Test()
-        {
-            return Utils.NORIP();
-        }
-
-        [RequireAuth]
-        [RequirePermission(Permission = "MANAGE_USERS")]
+        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpPost("new")]
         public async Task<IActionResult> NewUsersAsync([FromBody]NewUserRequestModel m)
         {
@@ -63,5 +43,16 @@ namespace Auth.Controllers
             response.Data = usersToInsert;
             return new JsonResult(response);
         }
+
+#region USER ROLE
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [HttpPut]
+        [Route("modify")]
+        public async Task ModifyPutAsync([FromBody]UserModifyRequestModel m) //todo do something
+        {
+
+        }
+#endregion
     }
 }
