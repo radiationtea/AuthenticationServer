@@ -4,8 +4,8 @@ phases:
   pre_build:
     commands:
       - echo Move All to Subdirectory
-      - rm -rf Auth
-      - mv * Auth | mkdir Auth
+      - mkdir Auth
+      - mv * Auth/ || true
       - echo Move Dockerfile to root
       - mv Auth/Dockerfile .
       - echo Logging in to Amazon ECR...
