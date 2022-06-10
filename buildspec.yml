@@ -4,6 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Move All to Subdirectory
+      - rm -rf Auth
       - mv * Auth | mkdir Auth
       - echo Move Dockerfile to root
       - mv Auth/Dockerfile .
