@@ -16,13 +16,13 @@ phases:
       - ORMCONFIG_PARMS=$(aws ssm get-parameter --name "/3ccert/auth/ormconfig" --output json --with-decryption)
       - APPSETTINGS_PARMS=$(aws ssm get-parameter --name "/3ccert/auth/appsettings" --output json --with-decryption)
       - SOLUTION_PARAMS=$(aws ssm get-parameter --name "/3ccert/auth/solution" --output json --with-decryption)
-      - echo $ORMCONFIG_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" > db.txt
+      - echo $ORMCONFIG_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" | sed 's/"//g' > db.txt
       - echo Loaded db.txt
       - cat db.txt
       - echo $APPSETTINGS_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" | jq '.|fromjson' > appsettings.Development.json
       - echo Loaded appsettings.Development.json
       - cat appsettings.Development.json
-      - echo $SOLUTION_PARAMS| sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" -r > 3C.sln
+      - echo $SOLUTION_PARAMS | sed 's/\n/\\n/g' | jq ".Parameter.Value" -r > 3C.sln 
       - echo Loaded 3C.sln file
       - cat 3C.sln 
   build:
