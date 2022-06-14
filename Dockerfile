@@ -7,7 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Auth/Auth.csproj", "Auth/"]
-RUN dotnet restore "Auth/Auth.csproj"s
+RUN dotnet restore "Auth/Auth.csproj"
 COPY . .
 WORKDIR "/src/Auth"
 RUN dotnet build "Auth.csproj" -c Release -o /app/build
@@ -19,4 +19,6 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY ./db.txt .
+COPY ./3C.sln .
+COPY ./appsettings.Development.json .
 CMD ["dotnet", "Auth.dll"]
