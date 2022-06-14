@@ -1,4 +1,5 @@
-﻿using Auth.Database;
+﻿using Auth.Constants;
+using Auth.Database;
 using Auth.Database.Models;
 using Auth.Models;
 using Microsoft.AspNetCore.Http;
@@ -21,14 +22,14 @@ namespace Auth.Controllers
             if (user == null)
             {
                 m.Success = false;
-                m.Message = "No such User.";
+                m.Code = ResponseCode.NOT_FOUND;
                 return new JsonResult(m);
             }
 
             if (user.Password != Utils.SHA512(user.Salt+request.Password))
             {
                 m.Success = false;
-                m.Message = "Incorrect Password.";
+                m.Code = ResponseCode.INCORRECT_PW;
                 return new JsonResult(m);
             }
 
@@ -38,7 +39,7 @@ namespace Auth.Controllers
             if (user.Salt == string.Empty)
             {
                 m.Success = true;
-                m.Message = "CHANGE_PASSWORD";
+                m.Code = ResponseCode.CHANGE_PW;
                 return new JsonResult(m);
             }
             return new JsonResult(m);

@@ -14,7 +14,7 @@ namespace Auth.Controllers
         public async Task<IActionResult> Get()
         {
             return new JsonResult(new GeneralResponseModel
-                { Success = true, Data = new { TotalMemoryUsage = Process.GetCurrentProcess().PagedMemorySize64 } });
+                { Success = true });
         }
     }
 }

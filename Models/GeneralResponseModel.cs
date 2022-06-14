@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Auth.Constants;
 
 namespace Auth.Models
 {
@@ -6,6 +7,6 @@ namespace Auth.Models
     {
         public bool Success { get; set; } = true;
         public object? Data { get; set; }
-        public string? Message { get; set; }
+        public string? Code { get; set; } = ResponseCode.OK;
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auth.Database.Models
 {
     public partial class User
     {
+        [Key]
         public string Userid { get; set; } = null!;
         public uint Depid { get; set; }
         public string Password { get; set; } = null!;

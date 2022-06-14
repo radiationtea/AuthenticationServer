@@ -7,5 +7,8 @@
         public const string MANAGE_NOTIFICATION = "MANAGE_NOTIFICATION";
         public const string MANAGE_CATEGORIES = "MANAGE_CATEGORIES";
         public const string MANAGE_SCORE = "MANAGE_SCORE";
+        public const string VIEW_REQUESTS = "VIEW_REQUESTS";
+        public const string MANAGE_POSTS = "MANAGE_POSTS";
+
     }
 }

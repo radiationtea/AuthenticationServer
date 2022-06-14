@@ -1,4 +1,5 @@
-﻿using Auth.Models;
+﻿using Auth.Constants;
+using Auth.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -15,7 +16,7 @@ namespace Auth.Attributes
             {
                 var m = new GeneralResponseModel();
                 m.Success = false;
-                m.Message = "Need authenticated.";
+                m.Code = ResponseCode.UNAUTHORIZED;
                 context.Result = new JsonResult(m);
                 return;
             }
@@ -27,7 +28,7 @@ namespace Auth.Attributes
             {
                 var m = new GeneralResponseModel();
                 m.Success = false;
-                m.Message = "Need authenticated.";
+                m.Code = ResponseCode.UNAUTHORIZED;
                 context.Result = new JsonResult(m);
                 context.HttpContext.Response.StatusCode = 401;
                 return Task.CompletedTask;

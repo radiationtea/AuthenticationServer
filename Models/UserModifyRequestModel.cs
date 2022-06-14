@@ -11,7 +11,7 @@ namespace Auth.Models
         public bool ResetPassword { get; set; } = false;
 
         [JsonPropertyName("phone")]
-        public string Phone { get; set; }
+        public string? Phone { get; set; } = null;
 
         [JsonPropertyName("role_to_remove")]
         public int[] RolesToRemove { get; set; } = Array.Empty<int>();

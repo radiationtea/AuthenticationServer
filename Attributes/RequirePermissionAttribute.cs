@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Auth.Constants;
 using Auth.Database.Models;
 using Auth.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace Auth.Attributes
             {
                 var m = new GeneralResponseModel();
                 m.Success = false;
-                m.Message = "insufficient permission.";
+                m.Code = ResponseCode.FORBIDDEN;
                 context.Result = new JsonResult(m);
                 return;
             }

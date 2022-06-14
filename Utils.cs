@@ -1,10 +1,16 @@
-﻿using System.Security.Cryptography;
+﻿using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+using Auth.Database.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Newtonsoft.Json;
 
 namespace Auth
 {
-    public class Utils
+    public static class Utils
     {
         public static IActionResult NORIP()
         {
@@ -35,6 +41,39 @@ namespace Auth
                 builder.Append((char)random.Next(minJpnCharCode, maxJpnCharCode));
             }
             return builder.ToString();
+        }
+        public static EntityEntry<T> AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        {
+            var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
+            return !exists ? dbSet.Add(entity) : null;
+        }
+
+        public static EntityEntry<T> RemoveIfExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        {
+            var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
+            return exists ? dbSet.Remove(entity) : null;
+        }
+
+        public static async Task<int> GetLastUserNumber(uint cardinal)
+        {
+            try
+            {
+                AuthDbContext db = new();
+                var last = db.Users.Where(x => x.Cardinal == cardinal && x.Userid.StartsWith("gbsw")).ToList().OrderByDescending(x=> GetNumberFromUserId(x.Userid)).FirstOrDefault();
+                if (last == null) return 0;
+                Console.WriteLine(JsonConvert.SerializeObject(last));
+                return GetNumberFromUserId(last.Userid);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return 0;
+            }
+        }
+
+        public static int GetNumberFromUserId(string userId)
+        {
+            return int.Parse(new Regex(@"\d+").Match(userId).Value);
         }
     }
 }
