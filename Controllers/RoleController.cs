@@ -62,6 +62,7 @@ namespace Auth.Controllers
             foreach (var i in m.PermissionsToRemove)
             {
                 var perm = await db.Permissions.SingleOrDefaultAsync(x => x.Permid == i);
+                if (perm == null) continue;
                 db.Permissions.Remove(perm);
             }
 
