@@ -10,6 +10,7 @@
         public const string VIEW_REQUESTS = "VIEW_REQUESTS";
         public const string MANAGE_POSTS = "MANAGE_POSTS";
         public const string MANAGE_PERMISSIONS = "MANAGE_PERMISSIONS";
+        public const string MANAGE_DEPARTS = "MANAGE_DEPARTS";
 
     }
 }
