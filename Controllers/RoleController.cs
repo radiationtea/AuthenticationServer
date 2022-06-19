@@ -70,6 +70,34 @@ namespace Auth.Controllers
 
             return new JsonResult(response);
         }
+
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_ROLES)]
+        [HttpDelete("remove")]
+        public async Task<IActionResult> RemoveRoleAsync([FromQuery] uint roleId)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            var role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleId);
+            if (role == null)
+            {
+                response.Success = false;
+                response.Code = ResponseCode.ROLE_NOT_FOUND;
+                return new JsonResult(response);
+            }
+
+            var perms = from i in db.Permissions
+                where i.Roleid == roleId
+                select i;
+            
+            db.RemoveRange(perms);
+            db.Roles.Remove(role);
+
+            await db.SaveChangesAsync();
+
+            return new JsonResult(response);
+        }
         
     }
 }

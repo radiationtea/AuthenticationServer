@@ -59,7 +59,7 @@ namespace Auth.Controllers
 
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
-        [HttpDelete]
+        [HttpDelete("remove")]
         public async Task<IActionResult> DeleteUserAsync([FromQuery] string userId)
         {
             AuthDbContext db = new ();
