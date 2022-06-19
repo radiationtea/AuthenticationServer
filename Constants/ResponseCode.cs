@@ -10,6 +10,7 @@
         public const string INCORRECT_PW = "INCORRECT_PW";
         public const string UNAUTHORIZED = "UNAUTHORIZED";
         public const string FORBIDDEN = "FORBIDDEN";
+        public const string ROLE_NOT_FOUND = "ROLE_NOT_FOUND";
 
 
     }

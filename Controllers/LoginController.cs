@@ -42,6 +42,7 @@ namespace Auth.Controllers
                 m.Code = ResponseCode.CHANGE_PW;
                 return new JsonResult(m);
             }
+            HttpContext.Response.Cookies.Append("SESSION_TOKEN", token);
             return new JsonResult(m);
         }
     }

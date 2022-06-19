@@ -81,7 +81,7 @@ namespace Auth.Controllers
             return new JsonResult(response);
         }
 
-#region USER ROLE
+        #region USER ROLE
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpPut]

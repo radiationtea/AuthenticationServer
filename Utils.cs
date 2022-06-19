@@ -71,6 +71,20 @@ namespace Auth
             }
         }
 
+        public static async Task<uint> GetLastRoleNumber()
+        {
+            try
+            {
+                AuthDbContext db = new();
+                var role = await db.Roles.OrderByDescending(x => x.Roleid).FirstOrDefaultAsync();
+                if (role == null) return 0;
+                return role.Roleid;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
         public static int GetNumberFromUserId(string userId)
         {
             return int.Parse(new Regex(@"\d+").Match(userId).Value);

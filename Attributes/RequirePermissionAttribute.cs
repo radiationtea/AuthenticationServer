@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Auth.Constants;
+﻿using Auth.Constants;
 using Auth.Database.Models;
 using Auth.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,7 @@ namespace Auth.Attributes
     public class RequirePermissionAttribute : ActionFilterAttribute
     {
         public string Permission;
-        public int Order = 2;
+        public int O3rder = 2;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var db = new AuthDbContext();

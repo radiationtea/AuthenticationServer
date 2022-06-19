@@ -113,22 +113,19 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<History>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => e.Hisid)
+                    .HasName("PRIMARY");
 
                 entity.ToTable("history");
 
-                entity.Property(e => e.Categoryid)
+                entity.Property(e => e.Hisid)
                     .HasColumnType("int(11)")
-                    .HasColumnName("categoryid");
+                    .HasColumnName("hisid");
 
                 entity.Property(e => e.Createdat)
                     .HasColumnType("timestamp")
                     .HasColumnName("createdat")
                     .HasDefaultValueSql("current_timestamp()");
-
-                entity.Property(e => e.Hisid)
-                    .HasColumnType("int(11)")
-                    .HasColumnName("hisid");
 
                 entity.Property(e => e.Subid)
                     .HasColumnType("int(11)")
@@ -274,7 +271,8 @@ namespace Auth.Database.Models
 
                 entity.Property(e => e.Userid)
                     .HasMaxLength(18)
-                    .HasColumnName("userid");
+                    .HasColumnName("userid")
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Label)
                     .HasMaxLength(30)
@@ -290,7 +288,6 @@ namespace Auth.Database.Models
 
                 entity.Property(e => e.Subid)
                     .HasColumnType("int(10) unsigned")
-                    .ValueGeneratedNever()
                     .HasColumnName("subid");
 
                 entity.Property(e => e.Categoryid)
@@ -308,7 +305,7 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                // entity.HasNoKey();
+                entity.HasNoKey();
 
                 entity.ToTable("users");
 
