@@ -8,8 +8,8 @@ Authentication server for 3C
 ## Endpoints
 
 - Login/Logout
-- Register(Only Admins)
-- User Data
+- User
+- Role
 
 ## Run Locally
 
