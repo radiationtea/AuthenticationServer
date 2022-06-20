@@ -25,5 +25,28 @@ namespace Auth.Controllers
             await db.SaveChangesAsync();
             return new JsonResult(response);
         }
+
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_DEPARTS)]
+        [HttpPut("modify")]
+        public async Task<IActionResult> ModifyDepartAsync([FromBody]DepartModifyRequestModel m)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            Depart? dep = await db.Departs.SingleOrDefaultAsync(x => x.Depid == m.DepId);
+            if (dep == null)
+            {
+                response.Success = false;
+                response.Code = ResponseCode.NOT_FOUND;
+                return new JsonResult(response);
+            }
+
+            dep.Desc = m.desc;
+            db.Departs.Update(dep);
+            await db.SaveChangesAsync();
+
+            return new JsonResult(response);
+        }
     }
 }
