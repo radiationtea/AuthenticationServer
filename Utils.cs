@@ -58,11 +58,11 @@ namespace Auth
         {
             try
             {
+                string ident = "gbsw" + cardinal;
                 AuthDbContext db = new();
-                User? last = db.Users.Where(x => x.Cardinal == cardinal && x.Userid.StartsWith("gbsw")).ToList().OrderByDescending(x=> GetNumberFromUserId(x.Userid)).FirstOrDefault();
+                User? last = db.Users.Where(x => x.Cardinal == cardinal && x.Userid.StartsWith(ident)).ToList().OrderByDescending(x=> x.Userid).FirstOrDefault();
                 if (last == null) return 0;
-                Console.WriteLine(JsonConvert.SerializeObject(last));
-                return GetNumberFromUserId(last.Userid);
+                return GetNumberFromUserId(last.Userid.Remove(0, ident.Length));
             }
             catch (Exception e)
             {

@@ -305,7 +305,7 @@ namespace Auth.Database.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasNoKey();
+                // entity.HasNoKey();
 
                 entity.ToTable("users");
 
