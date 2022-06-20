@@ -10,6 +10,7 @@ namespace Auth.Database.Models
         public uint Depid { get; set; }
         [JsonIgnore]
         public string Password { get; set; } = null!;
+        [JsonIgnore]
         public string? Salt { get; set; }
         public uint Cardinal { get; set; }
         public string Name { get; set; } = null!;
