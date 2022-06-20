@@ -13,7 +13,7 @@ namespace Auth.Attributes
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             AuthDbContext db = new ();
-            User user = (User)context.HttpContext.Items["user"];
+            User? user = context.HttpContext.GetUserFromContext();
             
             IEnumerable<string> permissions = (from r in db.Roles.Where(x => x.Userid == user.Userid).ToList()
                 let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
