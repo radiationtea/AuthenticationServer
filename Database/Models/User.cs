@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Auth.Database.Models
 {
@@ -7,6 +8,7 @@ namespace Auth.Database.Models
     {
         public string Userid { get; set; } = null!;
         public uint Depid { get; set; }
+        [JsonIgnore]
         public string Password { get; set; } = null!;
         public string? Salt { get; set; }
         public uint Cardinal { get; set; }
