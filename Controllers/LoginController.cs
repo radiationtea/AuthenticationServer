@@ -17,8 +17,9 @@ namespace Auth.Controllers
         public async Task<IActionResult> LoginAsync([FromBody]LoginRequestModel request)
         {
             AuthDbContext db = new();
-            var user = await db.Users.SingleOrDefaultAsync(x => x.Userid == request.UserId);
             GeneralResponseModel m = new();
+
+            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == request.UserId);
             if (user == null)
             {
                 m.Success = false;

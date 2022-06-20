@@ -10,13 +10,13 @@ namespace Auth.Attributes
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            Console.WriteLine("please1");
-            Console.WriteLine(context.HttpContext.Items["user"] is null);
             if (!context.HttpContext.Items.ContainsKey("user") || context.HttpContext.Items["user"] is null)
             {
-                var m = new GeneralResponseModel();
-                m.Success = false;
-                m.Code = ResponseCode.UNAUTHORIZED;
+                GeneralResponseModel m = new()
+                {
+                    Success = false,
+                    Code = ResponseCode.UNAUTHORIZED
+                };
                 context.Result = new JsonResult(m);
                 return;
             }
@@ -26,9 +26,11 @@ namespace Auth.Attributes
         {
             if (!context.HttpContext.Items.ContainsKey("user") || context.HttpContext.Items["user"] is null)
             {
-                var m = new GeneralResponseModel();
-                m.Success = false;
-                m.Code = ResponseCode.UNAUTHORIZED;
+                GeneralResponseModel m = new()
+                {
+                    Success = false,
+                    Code = ResponseCode.UNAUTHORIZED
+                };
                 context.Result = new JsonResult(m);
                 context.HttpContext.Response.StatusCode = 401;
                 return Task.CompletedTask;

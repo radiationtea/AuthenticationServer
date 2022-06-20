@@ -3,9 +3,9 @@ using Auth.Attributes;
 using Auth.Database;
 using Microsoft.AspNetCore.Mvc;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-var conf = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+IConfigurationRoot conf = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.Development.json").Build();
 JWTHandler.Secret = conf.GetValue<string>("JwtSecret");
 
@@ -23,7 +23,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 builder.Services.AddScoped<RequireAuthAttribute>();
 builder.Services.AddScoped<RequirePermissionAttribute>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 app.Use(JWTMiddleware.InvokeAsync);
 app.UseSwagger();
 app.UseSwaggerUI();

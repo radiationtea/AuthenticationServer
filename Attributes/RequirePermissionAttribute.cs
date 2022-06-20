@@ -12,17 +12,20 @@ namespace Auth.Attributes
         public int Order = 2;
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var db = new AuthDbContext();
-            var user = (User)context.HttpContext.Items["user"];
-            var permissions = (from r in db.Roles.Where(x => x.Userid == user.Userid).ToList()
+            AuthDbContext db = new ();
+            User user = (User)context.HttpContext.Items["user"];
+            
+            IEnumerable<string> permissions = (from r in db.Roles.Where(x => x.Userid == user.Userid).ToList()
                 let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
                     select p1.Label
                 select p).SelectMany(x=> x).Distinct();
             if (!permissions.Contains(Permission))
             {
-                var m = new GeneralResponseModel();
-                m.Success = false;
-                m.Code = ResponseCode.FORBIDDEN;
+                GeneralResponseModel m = new()
+                {
+                    Success = false,
+                    Code = ResponseCode.FORBIDDEN
+                };
                 context.Result = new JsonResult(m);
                 return;
             }

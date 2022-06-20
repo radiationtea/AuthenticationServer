@@ -3,6 +3,7 @@ using Auth.Constants;
 using Auth.Database.Models;
 using Auth.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -16,18 +17,18 @@ namespace Auth.Controllers
     {
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
-        [HttpPost("new")]
+        [HttpPost]
         public async Task<IActionResult> NewUsersAsync([FromBody]NewUserRequestModel m)
         {
             AuthDbContext db = new();
             string prefix = $"gbsw{m.Cardinal}";
-            var last = await Utils.GetLastUserNumber(m.Cardinal);
-            var prefixes = m.Users.Select((_, i) => $"{prefix}{i+1+last:D2}");
+            int last = await Utils.GetLastUserNumber(m.Cardinal);
+            IEnumerable<string> prefixes = m.Users.Select((_, i) => $"{prefix}{i+1+last:D2}");
             GeneralResponseModel response = new();
 
-            var usersToInsert = m.Users.Select((user, i) =>
+            IEnumerable<User?> usersToInsert = m.Users.Select((user, i) =>
             {
-                var id = prefixes.ElementAt(i);
+                string id = prefixes.ElementAt(i);
                 if (db.Users.Any(x => x.Userid == id + user.Name))
                 {
                     return null;
@@ -48,24 +49,36 @@ namespace Auth.Controllers
             return new JsonResult(response);
         }
 
-        [ApiVersion("0-dev")]
-        [HttpGet]
-        public async Task<IActionResult> TestEndPoint()
-        {
-            var last = await Utils.GetLastUserNumber(0);
-            var n = Utils.GetNumberFromUserId("gbsw0151");
-            return new JsonResult(new { last, n,n1= n, n2=int.Parse("gbsw0151".Substring(5)) });
-        }
-
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
-        [HttpDelete("remove")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserAsync([FromQuery] string userid)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userid);
+            if (user == null)
+            {
+                response.Success = false;
+                response.Code = ResponseCode.NOT_FOUND;
+                return new JsonResult(response);
+            }
+
+            response.Data = user;
+
+            return new JsonResult(response);
+        }
+        
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [HttpDelete]
         public async Task<IActionResult> DeleteUserAsync([FromQuery] string userId)
         {
             AuthDbContext db = new ();
-
-            var user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userId);
             GeneralResponseModel response = new();
+
+            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userId);
             
             if (user == null)
             {
@@ -81,16 +94,15 @@ namespace Auth.Controllers
             return new JsonResult(response);
         }
 
-        #region USER ROLE
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpPut]
-        [Route("modify")]
-        public async Task<IActionResult> ModifyUserAsync([FromBody]UserModifyRequestModel m)
+        public async Task<IActionResult> ModifyUserAsync([FromBody] UserModifyRequestModel m)
         {
             AuthDbContext db = new();
-            var user = await db.Users.SingleOrDefaultAsync(x => x.Userid == m.UserId);
             GeneralResponseModel response = new();
+
+            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == m.UserId);
             if (user == null)
             {
                 response.Code = ResponseCode.NOT_FOUND;
@@ -109,16 +121,16 @@ namespace Auth.Controllers
                 user.Phone = m.Phone;
             }
 
-            foreach (var i in m.RolesToAdd)
+            foreach (int i in m.RolesToAdd)
             {
-                var role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == i && x.Userid == string.Empty);
+                Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == i && x.Userid == string.Empty);
                 if (role == null) continue;
                 db.Roles.AddIfNotExists(new Role { Label = role.Label, Roleid = role.Roleid, Userid = m.UserId });
             }
 
-            foreach (var i in m.RolesToRemove)
+            foreach (int i in m.RolesToRemove)
             {
-                var role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == i && x.Userid == string.Empty);
+                Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == i && x.Userid == string.Empty);
                 if (role == null) continue;
                 db.Roles.RemoveIfExists(new Role { Label = role.Label, Roleid = role.Roleid, Userid = m.UserId });
             }
@@ -127,6 +139,5 @@ namespace Auth.Controllers
 
             return new JsonResult(response);
         }
-#endregion
     }
 }

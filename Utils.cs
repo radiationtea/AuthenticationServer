@@ -34,9 +34,9 @@ namespace Auth
 
         public static string GenerateRandomSalt(int length=10)
         {
-            var builder = new StringBuilder(length);
-            var random = new Random();
-            for (var i = 0; i < length; i++)
+            StringBuilder builder = new (length);
+            Random random = new ();
+            for (int i = 0; i < length; i++)
             {
                 builder.Append((char)random.Next(minJpnCharCode, maxJpnCharCode));
             }
@@ -44,13 +44,13 @@ namespace Auth
         }
         public static EntityEntry<T> AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
         {
-            var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
+            bool exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
             return !exists ? dbSet.Add(entity) : null;
         }
 
         public static EntityEntry<T> RemoveIfExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
         {
-            var exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
+            bool exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
             return exists ? dbSet.Remove(entity) : null;
         }
 
@@ -59,7 +59,7 @@ namespace Auth
             try
             {
                 AuthDbContext db = new();
-                var last = db.Users.Where(x => x.Cardinal == cardinal && x.Userid.StartsWith("gbsw")).ToList().OrderByDescending(x=> GetNumberFromUserId(x.Userid)).FirstOrDefault();
+                User? last = db.Users.Where(x => x.Cardinal == cardinal && x.Userid.StartsWith("gbsw")).ToList().OrderByDescending(x=> GetNumberFromUserId(x.Userid)).FirstOrDefault();
                 if (last == null) return 0;
                 Console.WriteLine(JsonConvert.SerializeObject(last));
                 return GetNumberFromUserId(last.Userid);
@@ -76,7 +76,7 @@ namespace Auth
             try
             {
                 AuthDbContext db = new();
-                var role = await db.Roles.OrderByDescending(x => x.Roleid).FirstOrDefaultAsync();
+                Role? role = await db.Roles.OrderByDescending(x => x.Roleid).FirstOrDefaultAsync();
                 if (role == null) return 0;
                 return role.Roleid;
             }

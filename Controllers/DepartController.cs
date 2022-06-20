@@ -15,7 +15,7 @@ namespace Auth.Controllers
     {
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_DEPARTS)]
-        [HttpPost("new")]
+        [HttpPost]
         public async Task<IActionResult> NewDepartAsync([FromBody]NewDepartRequestModel m)
         {
             AuthDbContext db = new();
@@ -27,8 +27,28 @@ namespace Auth.Controllers
         }
 
         [RequireAuth]
+        [HttpGet]
+        public async Task<IActionResult> GetDepartAsync([FromQuery] int depid)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            Depart? dep = await db.Departs.SingleOrDefaultAsync(x => x.Depid == depid);
+
+            if (dep == null)
+            {
+                response.Success = false;
+                response.Code = ResponseCode.NOT_FOUND;
+                return new JsonResult(response);
+            }
+
+            response.Data = dep;
+            return new JsonResult(response);
+        }
+
+        [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_DEPARTS)]
-        [HttpPut("modify")]
+        [HttpPut]
         public async Task<IActionResult> ModifyDepartAsync([FromBody]DepartModifyRequestModel m)
         {
             AuthDbContext db = new();

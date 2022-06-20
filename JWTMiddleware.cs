@@ -1,4 +1,5 @@
 ﻿using Auth.Database;
+using Auth.Database.Models;
 using Auth.Models;
 
 public class JWTMiddleware
@@ -7,7 +8,7 @@ public class JWTMiddleware
     {
         if (ctx.Request.Cookies.ContainsKey("SESSION_TOKEN"))
         {
-            var u = JWTHandler.DecodeJWT(ctx.Request.Cookies["SESSION_TOKEN"]);
+            User? u = JWTHandler.DecodeJWT(ctx.Request.Cookies["SESSION_TOKEN"]);
 
             if (u == null)
             {

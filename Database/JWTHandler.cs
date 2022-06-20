@@ -12,10 +12,10 @@ namespace Auth.Database
     {
         public static string Secret { get; set; }
 
-        public static async Task<string> GenerateJWTAsync(string userId)
+        public static async Task<string?> GenerateJWTAsync(string userId)
         {
-            var context = new AuthDbContext();
-            var destUser = await context.Users.SingleOrDefaultAsync(x=> x.Userid == userId);
+            AuthDbContext context = new ();
+            User? destUser = await context.Users.SingleOrDefaultAsync(x=> x.Userid == userId);
             if (destUser == null) return null;
             
             IJwtAlgorithm algorithm = new HMACSHA512Algorithm();
@@ -23,8 +23,7 @@ namespace Auth.Database
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
 
-            var token = encoder.Encode(destUser, Secret);
-            return token;
+            return encoder.Encode(destUser, Secret);
         }
 
         public static User? DecodeJWT(string jwt)
@@ -38,7 +37,7 @@ namespace Auth.Database
                 IJwtAlgorithm algorithm = new HMACSHA512Algorithm(); // symmetric
                 IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
 
-                var json = decoder.Decode(jwt, Secret, verify: true);
+                string json = decoder.Decode(jwt, Secret, verify: true);
                 return JsonConvert.DeserializeObject<User>(json);
             }
             catch (Exception)

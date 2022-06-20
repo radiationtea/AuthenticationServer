@@ -15,12 +15,12 @@ namespace Auth.Controllers
     {
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_ROLES)]
-        [HttpPost("new")]
+        [HttpPost]
         public async Task <IActionResult> NewRoleAsync([FromBody]NewRoleRequestModel m)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
-            var role = await db.Roles.SingleOrDefaultAsync(x => x.Label == m.Label);
+            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Label == m.Label);
 
             if (role != null)
             {
@@ -37,14 +37,35 @@ namespace Auth.Controllers
         }
 
         [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_ROLES)]
+        [HttpGet]
+        public async Task<IActionResult> GetRoleAsync([FromQuery] int roleid)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleid);
+            if (role == null)
+            {
+                response.Success = false;
+                response.Code = ResponseCode.NOT_FOUND;
+                return new JsonResult(response);
+            }
+
+            response.Data = role;
+
+            return new JsonResult(response);
+        }
+
+        [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
-        [HttpPut("modify")]
+        [HttpPut]
         public async Task<IActionResult> ModifyPutAsync([FromBody]RoleModifyRequestModel m)
         {
             AuthDbContext db = new ();
             GeneralResponseModel response = new();
 
-            var role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == m.RoleId);
+            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == m.RoleId);
             if (role == null)
             {
                 response.Success = false;
@@ -54,14 +75,14 @@ namespace Auth.Controllers
 
             if (m.Label != null) role.Label = m.Label;
 
-            foreach (var permission in m.PermissionsToAdd)
+            foreach (string permission in m.PermissionsToAdd)
             {
                 db.Permissions.Add(new() { Label = permission, Roleid = role.Roleid });
             }
 
-            foreach (var i in m.PermissionsToRemove)
+            foreach (uint i in m.PermissionsToRemove)
             {
-                var perm = await db.Permissions.SingleOrDefaultAsync(x => x.Permid == i);
+                Permission? perm = await db.Permissions.SingleOrDefaultAsync(x => x.Permid == i);
                 if (perm == null) continue;
                 db.Permissions.Remove(perm);
             }
@@ -73,13 +94,13 @@ namespace Auth.Controllers
 
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_ROLES)]
-        [HttpDelete("remove")]
+        [HttpDelete]
         public async Task<IActionResult> RemoveRoleAsync([FromQuery] uint roleId)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            var role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleId);
+            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleId);
             if (role == null)
             {
                 response.Success = false;
@@ -87,7 +108,7 @@ namespace Auth.Controllers
                 return new JsonResult(response);
             }
 
-            var perms = from i in db.Permissions
+            IQueryable<Permission> perms = from i in db.Permissions
                 where i.Roleid == roleId
                 select i;
             
