@@ -65,11 +65,11 @@ namespace Auth.Controllers
             AuthDbContext db = new ();
             GeneralResponseModel response = new();
 
-            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == m.RoleId);
+            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == m.RoleId && x.Userid == string.Empty);
             if (role == null)
             {
                 response.Success = false;
-                response.Code = ResponseCode.ROLE_NOT_FOUND;
+                response.Code = ResponseCode.NOT_FOUND;
                 return new JsonResult(response);
             }
 
