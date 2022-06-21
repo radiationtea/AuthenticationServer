@@ -27,6 +27,7 @@ app.Use(JWTMiddleware.InvokeAsync);
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
+app.UseCors(x => x.AllowAnyOrigin());
 
 //handles 404
 app.UseStatusCodePages(async (ctx) =>
