@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace Auth.Controllers
+namespace Auth.Controllers.v1
 {
     [ApiVersion("1")]
     [Route("api/auth/v{version:apiVersion}/[controller]")]
