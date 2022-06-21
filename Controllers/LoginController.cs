@@ -5,6 +5,7 @@ using Auth.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 
 namespace Auth.Controllers
 {
@@ -43,7 +44,8 @@ namespace Auth.Controllers
                 m.Code = ResponseCode.CHANGE_PW;
                 return new JsonResult(m);
             }
-            HttpContext.Response.Cookies.Append("SESSION_TOKEN", token, new CookieOptions{Domain = "3c.gbsw.hs.kr", SameSite = SameSiteMode.None, Secure = false, IsEssential = true, Expires = DateTimeOffset.Now.AddDays(30)});
+            HttpContext.Response.Cookies.Append("SESSION_TOKEN", token);
+            HttpContext.Response.Headers.SetCookie = new StringValues($"SESSION_TOKEN={token}");
             return new JsonResult(m);
         }
     }

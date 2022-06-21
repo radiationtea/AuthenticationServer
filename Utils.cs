@@ -32,7 +32,7 @@ namespace Auth
         const int minJpnCharCode = 0x4e00;
         const int maxJpnCharCode = 0x9FBF;
 
-        public static string GenerateRandomSalt(int length=10)
+        public static string GenerateRandomSalt(int length=5)
         {
             StringBuilder builder = new (length);
             Random random = new ();

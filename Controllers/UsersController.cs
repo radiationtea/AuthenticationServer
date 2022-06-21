@@ -26,6 +26,13 @@ namespace Auth.Controllers
             IEnumerable<string> prefixes = m.Users.Select((_, i) => $"{prefix}{i+1+last:D2}");
             GeneralResponseModel response = new();
 
+            if (m.Users.Any(x=> x.Name.Length > 4))
+            {
+                response.Success = false;
+                response.Code = ResponseCode.BAD_REQUEST;
+                return new JsonResult(response);
+            }
+
             IEnumerable<User?> usersToInsert = m.Users.Select((user, i) =>
             {
                 string id = prefixes.ElementAt(i);
@@ -33,6 +40,7 @@ namespace Auth.Controllers
                 {
                     return null;
                 }
+                
                 return new User()
                 {
                     Cardinal = m.Cardinal,
@@ -46,6 +54,8 @@ namespace Auth.Controllers
             }).Where(x=> x != null);
             await db.Users.AddRangeAsync(usersToInsert);
             await db.SaveChangesAsync();
+
+            response.Data = usersToInsert;
             return new JsonResult(response);
         }
 

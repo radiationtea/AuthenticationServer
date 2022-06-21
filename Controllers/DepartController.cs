@@ -68,5 +68,27 @@ namespace Auth.Controllers
 
             return new JsonResult(response);
         }
+
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_DEPARTS)]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteDepartAsync([FromQuery]int depid)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            Depart? dep = await db.Departs.SingleOrDefaultAsync(x => x.Depid == depid);
+            if (dep == null)
+            {
+                response.Success = false;
+                response.Code = ResponseCode.NOT_FOUND;
+                return new JsonResult(response);
+            }
+
+            db.Departs.Remove(dep);
+            await db.SaveChangesAsync();
+
+            return new JsonResult(response);
+        }
     }
 }

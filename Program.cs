@@ -19,7 +19,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 
-
 builder.Services.AddScoped<RequireAuthAttribute>();
 builder.Services.AddScoped<RequirePermissionAttribute>();
 

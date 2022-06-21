@@ -4,6 +4,7 @@ using Auth.Constants;
 using Auth.Database.Models;
 using Auth.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Controllers
 {
@@ -29,7 +30,7 @@ namespace Auth.Controllers
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
-            User? user = HttpContext.GetUserFromContext();
+            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == HttpContext.GetUserFromContext().Userid); //for newest data
             if (m.NewPassword != null)
             {
                 if (user.Password != Utils.SHA512(user.Salt+m.OldPassword))
