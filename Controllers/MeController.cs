@@ -38,7 +38,9 @@ namespace Auth.Controllers
                     return new JsonResult(response);
                 }
 
-                user.Password = Utils.SHA512(user.Salt + m.NewPassword);
+                string newsalt = Utils.GenerateRandomSalt();
+                user.Password = Utils.SHA512(newsalt + m.NewPassword);
+                user.Salt = newsalt;
                 db.Users.Update(user);
             }
 
