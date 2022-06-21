@@ -19,7 +19,12 @@ namespace Auth.Controllers.v1
         {
             GeneralResponseModel response = new();
 
-            response.Data = HttpContext.GetUserFromContext();
+            User user = HttpContext.GetUserFromContext();
+            response.Data = new
+            {
+                CurrentUser = user,
+                Permissions = user.GetPermissions()
+            };
 
             return new JsonResult(response);
         }

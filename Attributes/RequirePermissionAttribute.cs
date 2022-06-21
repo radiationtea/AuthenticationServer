@@ -14,11 +14,8 @@ namespace Auth.Attributes
         {
             AuthDbContext db = new ();
             User? user = context.HttpContext.GetUserFromContext();
-            
-            IEnumerable<string> permissions = (from r in db.Roles.Where(x => x.Userid == user.Userid).ToList()
-                let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
-                    select p1.Label
-                select p).SelectMany(x=> x).Distinct();
+
+            IEnumerable<string> permissions = user.GetPermissions();
             if (!permissions.Contains(Permission))
             {
                 GeneralResponseModel m = new()

@@ -91,5 +91,27 @@ namespace Auth
         }
 
         public static User? GetUserFromContext(this HttpContext ctx) => (User?)ctx.Items["user"];
+
+        public static IEnumerable<string> GetPermissions(this User user)
+        {
+            AuthDbContext db = new();
+            IEnumerable<string> permissions = (from r in db.Roles.Where(x => x.Userid == user.Userid).ToList()
+                let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
+                    select p1.Label
+                select p).SelectMany(x => x).Distinct();
+            return permissions;
+        }
+
+        public static IEnumerable<string> GetPermissions(string userId)
+        {
+            AuthDbContext db = new();
+            User? user = db.Users.SingleOrDefault(x => x.Userid == userId);
+            if (user == null) return new string[] { };
+            IEnumerable<string> permissions = (from r in db.Roles.Where(x => x.Userid == user.Userid).ToList()
+                let p = from p1 in db.Permissions.Where(x => x.Roleid == r.Roleid)
+                    select p1.Label
+                select p).SelectMany(x => x).Distinct();
+            return permissions;
+        }
     }
 }
