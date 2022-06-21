@@ -43,7 +43,7 @@ namespace Auth.Controllers
                 m.Code = ResponseCode.CHANGE_PW;
                 return new JsonResult(m);
             }
-            HttpContext.Response.Cookies.Append("SESSION_TOKEN", token);
+            HttpContext.Response.Cookies.Append("SESSION_TOKEN", token, new CookieOptions{Domain = "3c.gbsw.hs.kr", SameSite = SameSiteMode.None});
             return new JsonResult(m);
         }
     }
