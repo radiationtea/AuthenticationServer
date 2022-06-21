@@ -73,7 +73,15 @@ namespace Auth.Controllers
                 return new JsonResult(response);
             }
 
-            if (m.Label != null) role.Label = m.Label;
+            if (m.Label != null)
+            {
+                role.Label = m.Label;
+                IEnumerable<Role> roles = db.Roles.Where(x => x.Roleid == role.Roleid);
+                foreach (Role role1 in roles)
+                {
+                    role1.Label = m.Label;
+                }
+            }
 
             foreach (string permission in m.PermissionsToAdd)
             {
@@ -100,8 +108,8 @@ namespace Auth.Controllers
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleId);
-            if (role == null)
+            IEnumerable<Role> roles = db.Roles.Where(x => x.Roleid == roleId);
+            if (!roles.Any())
             {
                 response.Success = false;
                 response.Code = ResponseCode.ROLE_NOT_FOUND;
@@ -112,8 +120,8 @@ namespace Auth.Controllers
                 where i.Roleid == roleId
                 select i;
             
-            db.RemoveRange(perms);
-            db.Roles.Remove(role);
+            db.Permissions.RemoveRange(perms);
+            db.Roles.RemoveRange(roles);
 
             await db.SaveChangesAsync();
 
