@@ -44,7 +44,7 @@ namespace Auth.Controllers
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleid);
+            Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleid && x.Userid == string.Empty);
             if (role == null)
             {
                 response.Success = false;
