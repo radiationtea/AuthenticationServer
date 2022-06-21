@@ -1,4 +1,5 @@
-﻿using Auth.Attributes;
+﻿using System.Net;
+using Auth.Attributes;
 using Auth.Constants;
 using Auth.Database.Models;
 using Auth.Models;
@@ -45,7 +46,8 @@ namespace Auth.Controllers
             }
 
             await db.SaveChangesAsync();
-
+            HttpContext.Items.Remove("user");
+            HttpContext.Response.Cookies.Delete("SESSION_TOKEN");
             return new JsonResult(response);
         }
     }
