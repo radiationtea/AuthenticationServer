@@ -18,7 +18,7 @@ namespace Auth.Database
             User? destUser = await context.Users.SingleOrDefaultAsync(x=> x.Userid == userId);
             if (destUser == null) return null;
             
-            IJwtAlgorithm algorithm = new HMACSHA512Algorithm();
+            IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
@@ -34,7 +34,7 @@ namespace Auth.Database
                 IDateTimeProvider provider = new UtcDateTimeProvider();
                 IJwtValidator validator = new JwtValidator(serializer, provider);
                 IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-                IJwtAlgorithm algorithm = new HMACSHA512Algorithm(); // symmetric
+                IJwtAlgorithm algorithm = new HMACSHA256Algorithm(); // symmetric
                 IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
 
                 string json = decoder.Decode(jwt, Secret, verify: true);

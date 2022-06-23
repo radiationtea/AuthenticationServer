@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace Auth.Database.Models
 {
@@ -10,8 +10,10 @@ namespace Auth.Database.Models
         [Key]
         public string Userid { get; set; } = null!;
         public uint Depid { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
         [JsonIgnore]
         public string Password { get; set; } = null!;
+        [System.Text.Json.Serialization.JsonIgnore]
         [JsonIgnore]
         public string? Salt { get; set; }
         public uint Cardinal { get; set; }
