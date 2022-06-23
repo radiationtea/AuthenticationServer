@@ -39,11 +39,15 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_ROLES)]
         [HttpGet]
-        public async Task<IActionResult> GetRoleAsync([FromQuery] int roleid)
+        public async Task<IActionResult> GetRoleAsync([FromQuery] int roleid = -1)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
-
+            if (roleid == -1)
+            {
+                response.Data = db.Roles.ToList();
+                return new JsonResult(response);
+            }
             Role? role = await db.Roles.SingleOrDefaultAsync(x => x.Roleid == roleid && x.Userid == string.Empty);
             if (role == null)
             {
