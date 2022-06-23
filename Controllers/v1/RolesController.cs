@@ -11,7 +11,7 @@ namespace Auth.Controllers.v1
     [ApiVersion("1")]
     [Route("api/auth/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class RolesController : ControllerBase
     {
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_ROLES)]

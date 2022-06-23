@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using Auth.Constants;
 using Auth.Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -112,6 +113,23 @@ namespace Auth
                     select p1.Label
                 select p).SelectMany(x => x).Distinct();
             return permissions;
+        }
+
+        public static bool IsAboveThanMe(this User me, User dest)
+        {
+            IEnumerable<string> mePerms = me.GetPermissions();
+            IEnumerable<string> destPerms = dest.GetPermissions();
+
+            if (mePerms.Contains(Permissions.ADMINISTRATOR) && destPerms.Contains(Permissions.ADMINISTRATOR)) return true;
+            if (mePerms.Contains(Permissions.ADMINISTRATOR)) return false;
+            if (destPerms.Contains(Permissions.ADMINISTRATOR)) return true;
+
+            if (mePerms.Contains(Permissions.TEACHER) && destPerms.Contains(Permissions.TEACHER)) return true;
+            if (mePerms.Contains(Permissions.TEACHER)) return false;
+            if (destPerms.Contains(Permissions.TEACHER)) return true;
+
+            return true;
+
         }
     }
 }

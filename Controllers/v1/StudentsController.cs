@@ -13,36 +13,49 @@ namespace Auth.Controllers.v1
     [ApiVersion("1")]
     [Route("api/auth/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class StudentsController : ControllerBase
     {
         [RequireAuth]
-        [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
+        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpPost]
-        public async Task<IActionResult> NewUserAsync([FromBody]NewUserRequestModel m)
+        public async Task<IActionResult> NewStudentAsync([FromBody]NewStudentRequestModel m)
         {
             AuthDbContext db = new();
+            string prefix = $"gbsw{m.Cardinal}";
+            int last = await Utils.GetLastUserNumber(m.Cardinal);
+            IEnumerable<string> prefixes = m.Users.Select((_, i) => $"{prefix}{i+1+last:D2}");
             GeneralResponseModel response = new();
 
-            User? u = await db.Users.SingleOrDefaultAsync(x => x.Userid == m.UserId);
-            if (u != null)
+            if (m.Users.Any(x=> x.Name.Length > 4))
             {
                 response.Success = false;
-                response.Code = ResponseCode.NOT_FOUND;
+                response.Code = ResponseCode.BAD_REQUEST;
                 return new JsonResult(response);
             }
 
-            u = new();
-            u.Userid = m.UserId;
-            u.Name = m.Name;
-            u.Phone = m.Phone;
-            u.Cardinal = 0;
-            u.Depid = 0;
-            u.Password = Utils.SHA512(m.UserId);
-            u.Salt = string.Empty;
-            await db.Users.AddAsync(u);
+            IEnumerable<User?> usersToInsert = m.Users.Select((user, i) =>
+            {
+                string id = prefixes.ElementAt(i);
+                if (db.Users.Any(x => x.Userid == id + user.Name))
+                {
+                    return null;
+                }
+                
+                return new User
+                {
+                    Cardinal = m.Cardinal,
+                    Depid = m.DepId,
+                    Name = user.Name,
+                    Password = Utils.SHA512(id),
+                    Phone = user.Phone,
+                    Salt = string.Empty,
+                    Userid = id
+                };
+            }).Where(x=> x != null);
+            await db.Users.AddRangeAsync(usersToInsert);
             await db.SaveChangesAsync();
 
-            response.Data = u;
+            response.Data = usersToInsert;
             return new JsonResult(response);
         }
 
@@ -59,6 +72,13 @@ namespace Auth.Controllers.v1
             {
                 response.Success = false;
                 response.Code = ResponseCode.NOT_FOUND;
+                return new JsonResult(response);
+            }
+
+            if (HttpContext.GetUserFromContext().IsAboveThanMe(user))
+            {
+                response.Success = false;
+                response.Code = ResponseCode.FORBIDDEN;
                 return new JsonResult(response);
             }
 
