@@ -47,7 +47,7 @@ namespace Auth.Controllers.v1
         }
 
         [RequireAuth]
-        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpGet]
         public async Task<IActionResult> GetUserAsync([FromQuery] string userid)
         {
@@ -68,7 +68,7 @@ namespace Auth.Controllers.v1
         }
         
         [RequireAuth]
-        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpDelete]
         public async Task<IActionResult> DeleteUserAsync([FromQuery] string userId)
         {
@@ -99,7 +99,7 @@ namespace Auth.Controllers.v1
         }
 
         [RequireAuth]
-        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpPut]
         public async Task<IActionResult> ModifyUserAsync([FromBody] UserModifyRequestModel m)
         {
