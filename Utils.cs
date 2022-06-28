@@ -91,7 +91,7 @@ namespace Auth
             return int.Parse(new Regex(@"\d+").Match(userId).Value);
         }
 
-        public static User? GetUserFromContext(this HttpContext ctx) => (User?)ctx.Items["user"];
+        public static User GetUserFromContext(this HttpContext ctx) => (User)ctx.Items["user"];
 
         public static IEnumerable<string> GetPermissions(this User user)
         {

@@ -1,4 +1,5 @@
-﻿using Auth.Attributes;
+﻿using System.Collections;
+using Auth.Attributes;
 using Auth.Constants;
 using Auth.Database.Models;
 using Auth.Models;
@@ -86,7 +87,32 @@ namespace Auth.Controllers.v1
 
             return new JsonResult(response);
         }
-        
+
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredUserAsync([FromQuery]StudentFilterRequestModel m)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            IEnumerable<User> users = db.Users;
+            
+            if (m.Cardinal.HasValue)
+            {
+                users = users.Where(x => x.Cardinal == m.Cardinal);
+            }
+
+            if (m.DepartId.HasValue)
+            {
+                users = users.Where(x => x.Depid == m.DepartId);
+            }
+
+            response.Data = users;
+
+            return new JsonResult(response);
+        }
+
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpDelete]
