@@ -23,7 +23,8 @@ namespace Auth.Controllers.v1
             response.Data = new
             {
                 CurrentUser = user,
-                Permissions = user.GetPermissions()
+                Permissions = user.GetPermissions(),
+                Depart = user.Dep
             };
 
             return new JsonResult(response);
