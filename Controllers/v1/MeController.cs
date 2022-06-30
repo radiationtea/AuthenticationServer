@@ -17,14 +17,16 @@ namespace Auth.Controllers.v1
         [HttpGet]
         public async Task<IActionResult> GetMeAsync()
         {
+            AuthDbContext db = new();
             GeneralResponseModel response = new();
 
             User user = HttpContext.GetUserFromContext();
+
             response.Data = new
             {
                 CurrentUser = user,
                 Permissions = user.GetPermissions(),
-                Depart = user.Dep
+                Depart = await db.Departs.SingleOrDefaultAsync(x=> x.Depid == user.Depid)
             };
 
             return new JsonResult(response);

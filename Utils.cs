@@ -43,13 +43,13 @@ namespace Auth
             }
             return builder.ToString();
         }
-        public static EntityEntry<T> AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        public static EntityEntry<T>? AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
         {
             bool exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
             return !exists ? dbSet.Add(entity) : null;
         }
 
-        public static EntityEntry<T> RemoveIfExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        public static EntityEntry<T>? RemoveIfExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
         {
             bool exists = predicate != null ? dbSet.Any(predicate) : dbSet.Any(x => x == entity);
             return exists ? dbSet.Remove(entity) : null;
