@@ -49,7 +49,7 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpGet]
-        public async Task<IActionResult> GetUserAsync([FromQuery] string userid)
+        public async Task<IActionResult> GetUserAsync([FromQuery] string userid, [FromQuery] int depId = 0)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
