@@ -63,7 +63,7 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpGet]
-        public async Task<IActionResult> GetUserAsync([FromQuery] string userid)
+        public async Task<IActionResult> GetStudentAsync([FromQuery] string userid)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
@@ -91,7 +91,7 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpGet("filter")]
-        public async Task<IActionResult> GetFilteredUserAsync([FromQuery]StudentFilterRequestModel m)
+        public async Task<IActionResult> GetFilteredStudentAsync([FromQuery]StudentFilterRequestModel m)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
@@ -116,7 +116,7 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpDelete]
-        public async Task<IActionResult> DeleteUserAsync([FromQuery] string userId)
+        public async Task<IActionResult> DeleteStudentAsync([FromQuery] string userId)
         {
             AuthDbContext db = new ();
             GeneralResponseModel response = new();
@@ -147,7 +147,7 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpPut]
-        public async Task<IActionResult> ModifyUserAsync([FromBody] UserModifyRequestModel m)
+        public async Task<IActionResult> ModifyStudentAsync([FromBody] UserModifyRequestModel m)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
