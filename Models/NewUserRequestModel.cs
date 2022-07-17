@@ -5,12 +5,12 @@ namespace Auth.Models
     public class NewUserRequestModel
     {
         [JsonPropertyName("user_id")]
-        public string UserId;
+        public string UserId { get; set; }
 
         [JsonPropertyName("name")]
-        public string Name;
+        public string Name { get; set; }
 
         [JsonPropertyName("phone")]
-        public string Phone;
+        public string Phone { get; set; }
     }
 }

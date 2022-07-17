@@ -6,15 +6,15 @@ namespace Auth.Models
     public class RoleModifyRequestModel
     {
         [JsonPropertyName("role_id")]
-        public int RoleId;
+        public int RoleId { get; set; }
 
         [JsonPropertyName("label")]
-        public string? Label;
+        public string? Label { get; set; }
 
         [JsonPropertyName("perms_to_add")]
-        public string[] PermissionsToAdd = Array.Empty<string>();
+        public string[] PermissionsToAdd { get; set; } = Array.Empty<string>();
 
         [JsonPropertyName("perms_to_remove")]
-        public uint[] PermissionsToRemove = Array.Empty<uint>();
+        public uint[] PermissionsToRemove { get; set; } = Array.Empty<uint>();
     }
 }

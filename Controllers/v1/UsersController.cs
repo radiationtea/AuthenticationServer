@@ -49,12 +49,27 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpGet]
-        public async Task<IActionResult> GetUserAsync([FromQuery] string userid)
+        public async Task<IActionResult> GetUsersAsync([FromQuery] int page = 1)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userid);
+            IQueryable<User> user = db.Users.Pagination(page);
+
+            response.Data = user;
+
+            return new JsonResult(response);
+        }
+
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserAsync(string userId)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userId);
             if (user == null)
             {
                 response.Success = false;

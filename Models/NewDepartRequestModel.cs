@@ -5,6 +5,6 @@ namespace Auth.Models
     public class NewDepartRequestModel
     {
         [JsonPropertyName("desc")]
-        public string Desc;
+        public string Desc { get; set; }
     }
 }

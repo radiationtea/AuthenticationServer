@@ -5,9 +5,9 @@ namespace Auth.Models
     public class DepartModifyRequestModel
     {
         [JsonPropertyName("dep_id")]
-        public int DepId;
+        public int DepId { get; set; }
         
         [JsonPropertyName("desc")]
-        public string Desc;
+        public string Desc { get; set; }
     }
 }
