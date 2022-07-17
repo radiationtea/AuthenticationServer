@@ -52,10 +52,9 @@ namespace Auth.Controllers.v1
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
-
             IQueryable<Depart> dep = db.Departs.Pagination(page);
             
-            response.Data = dep;
+            response.Data = dep.ToList();
             return new JsonResult(response);
         }
 
