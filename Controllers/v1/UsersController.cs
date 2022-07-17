@@ -49,12 +49,12 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpGet]
-        public async Task<IActionResult> GetUsersAsync([FromQuery]GeneralPaginationRequestModel m, [FromQuery] bool excludeStudent = false)
+        public async Task<IActionResult> GetUsersAsync([FromQuery] UserFilterRequestModel m, [FromQuery]GeneralPaginationRequestModel m1)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IQueryable<User> user = excludeStudent ? db.Users.Where(x=> !x.Userid.StartsWith("gbsw")).Pagination(m.Page, m.Limit) : db.Users.Pagination(m.Page, m.Limit);
+            IQueryable<User> user = m.OnlyStudent ? db.Users.Where(x=> x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit) : db.Users.Pagination(m1.Page, m1.Limit);
 
             response.Data = user;
 
@@ -92,7 +92,7 @@ namespace Auth.Controllers.v1
 
             IEnumerable<User> users = m.OnlyStudent
                 ? db.Users.Where(x => x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit)
-                : db.Users.Where(x=> !x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit);
+                : db.Users.Pagination(m1.Page, m1.Limit);
             //
             // if (m.Cardinal.HasValue)
             // {
