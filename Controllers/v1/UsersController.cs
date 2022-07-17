@@ -49,12 +49,12 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpGet]
-        public async Task<IActionResult> GetUsersAsync([FromQuery] int page = 1)
+        public async Task<IActionResult> GetUsersAsync([FromQuery]GeneralPaginationRequestModel m)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IQueryable<User> user = db.Users.Pagination(page);
+            IQueryable<User> user = db.Users.Pagination(m.Page, m.Limit);
 
             response.Data = user;
 

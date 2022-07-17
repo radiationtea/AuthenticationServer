@@ -63,12 +63,27 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpGet]
-        public async Task<IActionResult> GetStudentAsync([FromQuery] string userid)
+        public async Task<IActionResult> GetStudentsAsync([FromQuery]GeneralPaginationRequestModel m)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userid);
+            IQueryable<User> user = db.Users.Where(x=> x.Userid.StartsWith("gbsw")).Pagination(m.Page, m.Limit);
+            
+            response.Data = user;
+
+            return new JsonResult(response);
+        }
+
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetStudentAsync(string userId)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userId);
             if (user == null)
             {
                 response.Success = false;

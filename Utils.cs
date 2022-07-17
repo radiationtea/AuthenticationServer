@@ -133,9 +133,22 @@ namespace Auth
 
         }
 
-        public static IQueryable<T> Pagination<T>(this DbSet<T> dbSet, int page = 1) where T : class
+        public static IQueryable<T> Pagination<T>(this DbSet<T> dbSet, int page = 1, int limit = 10) where T : class
         {
-            return dbSet.Skip(10 * (page - 1)).Take(10);
+            if (page < 1)
+            {
+                return dbSet.Take(limit);
+            }
+            return dbSet.Skip(limit * (page - 1)).Take(limit);
+        }
+
+        public static IQueryable<T> Pagination<T>(this IQueryable<T> dbSet, int page = 1, int limit = 10) where T : class
+        {
+            if (page < 1)
+            {
+                return dbSet.Take(limit);
+            }
+            return dbSet.Skip(limit * (page - 1)).Take(limit);
         }
     }
 }
