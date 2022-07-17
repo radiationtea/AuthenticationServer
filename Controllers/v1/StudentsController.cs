@@ -96,7 +96,7 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IEnumerable<User> users = db.Users;
+            IEnumerable<User> users = db.Users.Where(x=> x.Userid.StartsWith("gbsw"));
             
             if (m.Cardinal.HasValue)
             {
