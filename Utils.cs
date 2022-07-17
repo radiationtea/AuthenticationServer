@@ -7,6 +7,7 @@ using Auth.Database.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Internal;
 using Newtonsoft.Json;
 
 namespace Auth
@@ -130,6 +131,11 @@ namespace Auth
 
             return true;
 
+        }
+
+        public static IQueryable<T> Pagination<T>(this DbSet<T> dbSet, int page = 1) where T : class
+        {
+            return dbSet.Skip(10 * (page - 1)).Take(10);
         }
     }
 }

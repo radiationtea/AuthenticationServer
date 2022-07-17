@@ -5,9 +5,9 @@ namespace Auth.Models
     public class StudentFilterRequestModel
     {
         [JsonPropertyName("cardinal")]
-        public int? Cardinal { get; set; }
+        public int? Cardinal;
 
         [JsonPropertyName("depart")]
-        public int? DepartId { get; set; }
+        public int? DepartId;
     }
 }

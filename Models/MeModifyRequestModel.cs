@@ -5,8 +5,8 @@ namespace Auth.Models
     public class MeModifyRequestModel
     {
         [JsonPropertyName("old_password")]
-        public string? OldPassword { get; set; }
+        public string? OldPassword;
         [JsonPropertyName("new_password")]
-        public string? NewPassword { get; set; }
+        public string? NewPassword;
     }
 }

@@ -27,8 +27,8 @@ namespace Auth.Controllers.v1
         }
 
         [RequireAuth]
-        [HttpGet]
-        public async Task<IActionResult> GetDepartAsync([FromQuery] int depid)
+        [HttpGet("{depid}")]
+        public async Task<IActionResult> GetDepartAsync(int depid)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
@@ -42,6 +42,19 @@ namespace Auth.Controllers.v1
                 return new JsonResult(response);
             }
 
+            response.Data = dep;
+            return new JsonResult(response);
+        }
+
+        [RequireAuth]
+        [HttpGet]
+        public async Task<IActionResult> GetDepartsAsync([FromQuery]int page = 1)
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            IQueryable<Depart> dep = db.Departs.Pagination(page);
+            
             response.Data = dep;
             return new JsonResult(response);
         }
@@ -62,7 +75,7 @@ namespace Auth.Controllers.v1
                 return new JsonResult(response);
             }
 
-            dep.Desc = m.desc;
+            dep.Desc = m.Desc;
             db.Departs.Update(dep);
             await db.SaveChangesAsync();
 

@@ -70,12 +70,12 @@ namespace Auth.Controllers.v1
         [RequireAuth]
         [RequirePermission(Permission = Permissions.MANAGE_USERS)]
         [HttpGet("filter")]
-        public async Task<IActionResult> GetFilteredUsersAsync([FromQuery]bool excludeStudent = false) // todo request model
+        public async Task<IActionResult> GetFilteredUsersAsync([FromQuery]UserFilterRequestModel m)
         {
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IEnumerable<User> users = excludeStudent
+            IEnumerable<User> users = m.ExcludeStudent
                 ? db.Users.Where(x => !x.Userid.StartsWith("gbsw"))
                 : db.Users;
             //

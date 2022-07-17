@@ -7,9 +7,9 @@ namespace Auth.Models
     public class LoginRequestModel
     {
         [JsonPropertyName("user_id")]
-        public string UserId { get; set; }
+        public string UserId;
 
         [JsonPropertyName("password")]
-        public string Password { get; set; }
+        public string Password;
     }
 }

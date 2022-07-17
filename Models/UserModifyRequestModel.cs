@@ -5,18 +5,18 @@ namespace Auth.Models
     public class UserModifyRequestModel
     {
         [JsonPropertyName("user_id")]
-        public string UserId { get; set; }
+        public string UserId;
 
         [JsonPropertyName("reset_password")]
-        public bool ResetPassword { get; set; } = false;
+        public bool ResetPassword = false;
 
         [JsonPropertyName("phone")]
-        public string? Phone { get; set; } = null;
+        public string? Phone = null;
 
         [JsonPropertyName("role_to_remove")]
-        public int[] RolesToRemove { get; set; } = Array.Empty<int>();
+        public int[] RolesToRemove = Array.Empty<int>();
 
         [JsonPropertyName("role_to_add")]
-        public int[] RolesToAdd { get; set; } = Array.Empty<int>();
+        public int[] RolesToAdd = Array.Empty<int>();
     }
 }

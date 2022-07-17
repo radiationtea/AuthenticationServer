@@ -5,8 +5,6 @@ namespace Auth.Models
     public class PermissionsRequestModel
     {
         [JsonPropertyName("user_id")]
-        public string UserId { get; set; }
-
-
+        public string UserId;
     }
 }

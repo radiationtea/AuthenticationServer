@@ -5,6 +5,6 @@ namespace Auth.Models
     public class NewRoleRequestModel
     {
         [JsonPropertyName("label")]
-        public string Label { get; set; }
+        public string Label;
     }
 }
