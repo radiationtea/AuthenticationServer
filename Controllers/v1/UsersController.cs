@@ -66,7 +66,34 @@ namespace Auth.Controllers.v1
 
             return new JsonResult(response);
         }
-        
+
+        [RequireAuth]
+        [RequirePermission(Permission = Permissions.MANAGE_USERS)]
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredUsersAsync([FromQuery]bool excludeStudent = false) // todo request model
+        {
+            AuthDbContext db = new();
+            GeneralResponseModel response = new();
+
+            IEnumerable<User> users = excludeStudent
+                ? db.Users.Where(x => !x.Userid.StartsWith("gbsw"))
+                : db.Users;
+            //
+            // if (m.Cardinal.HasValue)
+            // {
+            //     users = users.Where(x => x.Cardinal == m.Cardinal);
+            // }
+            //
+            // if (m.DepartId.HasValue)
+            // {
+            //     users = users.Where(x => x.Depid == m.DepartId);
+            // }
+
+            response.Data = users;
+
+            return new JsonResult(response);
+        }
+
         [RequireAuth]
         [RequirePermission(Permission = Permissions.ADMINISTRATOR)]
         [HttpDelete]
