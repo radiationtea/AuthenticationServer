@@ -10,6 +10,7 @@ namespace Auth.Database.Models
     {
         [Key]
         public string Userid { get; set; } = null!;
+        public uint Depid { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
         [JsonIgnore]
         public string Password { get; set; } = null!;
@@ -20,8 +21,7 @@ namespace Auth.Database.Models
         public string Name { get; set; } = null!;
         public string Phone { get; set; } = null!;
 
-        [ForeignKey("Depart")]
-        public uint Depid { get; set; }
-        public Depart Dep { get; set; } = null!;
+        [Required]
+        public virtual Depart Dep { get; set; } = null!;
     }
 }
