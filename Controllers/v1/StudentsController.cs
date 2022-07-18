@@ -68,7 +68,7 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IQueryable<User> user = db.Users.Where(x=> x.Userid.StartsWith("gbsw")).Pagination(m.Page, m.Limit);
+            IQueryable<User> user = db.Users.Include(x => x.Dep).Where(x=> x.Userid.StartsWith("gbsw")).Pagination(m.Page, m.Limit);
             
             response.Data = user;
 
@@ -111,7 +111,7 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IEnumerable<User> users = db.Users.Where(x=> x.Userid.StartsWith("gbsw"));
+            IEnumerable<User> users = db.Users.Include(x => x.Dep).Where(x=> x.Userid.StartsWith("gbsw"));
             
             if (m.Cardinal.HasValue)
             {

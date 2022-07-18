@@ -54,7 +54,7 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IQueryable<User> user = m.OnlyStudent ? db.Users.Include(x=> x.Dep).Where(x=> x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit) : db.Users.Include(x => x.Dep).Pagination(m1.Page, m1.Limit);
+            IQueryable<User> user = m.ExcludeStudent ? db.Users.Include(x=> x.Dep).Where(x=> !x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit) : db.Users.Include(x => x.Dep).Pagination(m1.Page, m1.Limit);
 
             response.Data = user;
 
@@ -69,7 +69,7 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userId);
+            User? user = await db.Users.Include(x => x.Dep).SingleOrDefaultAsync(x => x.Userid == userId);
             if (user == null)
             {
                 response.Success = false;
@@ -90,9 +90,9 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IEnumerable<User> users = m.OnlyStudent
-                ? db.Users.Where(x => x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit)
-                : db.Users.Pagination(m1.Page, m1.Limit);
+            IEnumerable<User> users = m.ExcludeStudent
+                ? db.Users.Include(x=> x.Dep).Where(x => !x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit)
+                : db.Users.Include(x => x.Dep).Pagination(m1.Page, m1.Limit);
             //
             // if (m.Cardinal.HasValue)
             // {

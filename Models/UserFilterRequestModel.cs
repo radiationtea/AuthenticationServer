@@ -4,7 +4,7 @@ namespace Auth.Models
 {
     public class UserFilterRequestModel
     {
-        [JsonPropertyName("onlyStudent")]
-        public bool OnlyStudent { get; set; } = false;
+        [JsonPropertyName("excludeStudent")]
+        public bool ExcludeStudent { get; set; } = false;
     }
 }
