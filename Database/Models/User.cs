@@ -20,7 +20,7 @@ namespace Auth.Database.Models
         public string Name { get; set; } = null!;
         public string Phone { get; set; } = null!;
         public uint Depid { get; set; }
-        [ForeignKey("DepId")]
-        public Depart Dep { get; set; } = null!;
+        [ForeignKey("Depid")]
+        public virtual Depart Dep { get; set; } = null!;
     }
 }
