@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace Auth.Database.Models
@@ -9,7 +10,6 @@ namespace Auth.Database.Models
     {
         [Key]
         public string Userid { get; set; } = null!;
-        public uint Depid { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
         [JsonIgnore]
         public string Password { get; set; } = null!;
@@ -20,6 +20,8 @@ namespace Auth.Database.Models
         public string Name { get; set; } = null!;
         public string Phone { get; set; } = null!;
 
+        [ForeignKey("Depart")]
+        public uint Depid { get; set; }
         public Depart Dep { get; set; } = null!;
     }
 }
