@@ -83,7 +83,7 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            User? user = await db.Users.SingleOrDefaultAsync(x => x.Userid == userId);
+            User? user = await db.Users.Include(x => x.Dep).SingleOrDefaultAsync(x => x.Userid == userId);
             if (user == null)
             {
                 response.Success = false;

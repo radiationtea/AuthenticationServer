@@ -54,7 +54,7 @@ namespace Auth.Controllers.v1
             AuthDbContext db = new();
             GeneralResponseModel response = new();
 
-            IQueryable<User> user = m.OnlyStudent ? db.Users.Where(x=> x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit) : db.Users.Pagination(m1.Page, m1.Limit);
+            IQueryable<User> user = m.OnlyStudent ? db.Users.Include(x=> x.Dep).Where(x=> x.Userid.StartsWith("gbsw")).Pagination(m1.Page, m1.Limit) : db.Users.Include(x => x.Dep).Pagination(m1.Page, m1.Limit);
 
             response.Data = user;
 
