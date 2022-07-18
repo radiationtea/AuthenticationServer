@@ -11,7 +11,10 @@ JWTHandler.Secret = conf.GetValue<string>("JwtSecret");
 
 builder.WebHost.UseUrls(conf.GetValue<string>("Host"));
 builder.Services.AddControllers().AddJsonOptions(x=> x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.ResolveConflictingActions(x=> x.LastOrDefault());
+});
 builder.Services.AddApiVersioning(x => x.AssumeDefaultVersionWhenUnspecified = true);
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
