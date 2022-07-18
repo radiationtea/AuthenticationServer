@@ -19,9 +19,8 @@ namespace Auth.Database.Models
         public uint Cardinal { get; set; }
         public string Name { get; set; } = null!;
         public string Phone { get; set; } = null!;
-
-        [ForeignKey("Dep")]
         public uint Depid { get; set; }
+        [ForeignKey("DepId")]
         public Depart Dep { get; set; } = null!;
     }
 }
