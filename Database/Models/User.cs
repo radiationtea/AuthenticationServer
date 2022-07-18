@@ -10,6 +10,8 @@ namespace Auth.Database.Models
     {
         [Key]
         public string Userid { get; set; } = null!;
+        
+        [ForeignKey("Dep")]
         public uint Depid { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
         [JsonIgnore]
