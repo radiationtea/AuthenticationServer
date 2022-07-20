@@ -19,8 +19,6 @@ namespace Auth.Database.Models
         public uint Cardinal { get; set; }
         public string Name { get; set; } = null!;
         public string Phone { get; set; } = null!;
-        [JsonIgnore]
-        [Newtonsoft.Json.JsonIgnore]
         public uint Depid { get; set; }
         [ForeignKey("Depid")]
         public virtual Depart Dep { get; set; } = null!;
