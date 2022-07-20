@@ -10,7 +10,8 @@ Authentication server for 3C
 - Login/Logout
 - User
 - Role
-
+- Depart
+- Students
 ## Run Locally
 
 Clone the project
